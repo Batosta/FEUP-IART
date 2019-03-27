@@ -15,6 +15,28 @@ class Game:
         # self.algorithm = utilities.chooseAlg()
 
 
+
+    def is_adjacent(piece, piece2):
+        if ((abs(piece.coords[0] - piece.coords[0]) + abs(piece2.coords[1]- piece2.coords[1])) < 2))
+            return True
+        else:
+            return False
+
+    def in_bloc(block, piece):
+        for p in block.board:
+            if is_adjacent(p, piece)
+                return True
+        return False
+
+    def add_piece(self, piece):
+        for block in self.blocks:
+            if block.color == piece.color:
+                if in_block(block, piece):
+                    block.board.append(piece)
+                    return
+        newBlock = Block([piece], piece.color)
+        self.blocks.append(newBlock)
+        
     def createPieceBoard(self, board):
     	r = 0
     	for row in board:
@@ -43,10 +65,10 @@ class Game:
         for block in self.blocks:
             if block.color not in colors:
                 colors.append(block.color)
-        if(len(self.blocks) != len(colors))
-            return
+            else:
+                return
         input("You won! Press Enter to continue...")
-        exit()		r += 1
+        exit()
 
     # 	print(coords)
 
