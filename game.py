@@ -13,7 +13,7 @@ class Game:
         # self.createBlocks()
     	# self.checkWin(3)
         # self.algorithm = utilities.chooseAlg()
-    
+
 
     def createPieceBoard(self, board):
     	r = 0
@@ -38,16 +38,15 @@ class Game:
             print(" " + col.color + " ",end='')
         print("]")
 
-    # def checkWin(self, color):
-    # 	coords = []
-    # 	r = 0
-    # 	for row in self.board:
-    # 		c = 0
-    # 		for col in row:
-    # 			if col.color == color:
-    # 				coords.append([r][c])
-    # 			c += 1
-    # 		r += 1
+    def checkWin(self):
+        colors = []
+        for block in self.blocks:
+            if block.color not in colors:
+                colors.append(block.color)
+        if(len(self.blocks) != len(colors))
+            return
+        input("You won! Press Enter to continue...")
+        exit()		r += 1
 
     # 	print(coords)
 
