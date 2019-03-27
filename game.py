@@ -39,7 +39,6 @@ class Game:
         print("]")
 
     # def checkWin(self, color):
-
     # 	coords = []
     # 	r = 0
     # 	for row in self.board:
@@ -51,15 +50,6 @@ class Game:
     # 		r += 1
 
     # 	print(coords)
-
-
-    # def win(self):
-    #     for row in self.board:
-    #         for col in row:
-    #             if col != '0' and col[1] != '1':
-    #                 return
-    #     input("You won! Press Enter to continue...")
-    #     exit()
 
     # def select_piece(self, piece):
     #     r = 0
@@ -95,7 +85,6 @@ class Game:
     #     new_positions = self.select_piece(piece)
     #     if new_positions != positions:
     #         self.join_color(piece, new_positions)
-    
 
     # def move(self, piece, movements):
     #     r = 0
@@ -140,6 +129,5 @@ class Game:
         # self.can_move(piece, 0, 1)
         # self.printBoard()
         # self.win()
-
 
 p1 = Game(levels.test)
