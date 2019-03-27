@@ -8,7 +8,7 @@ class Game:
         self.board = board
         self.moves = 0
         self.printBoard()
-    
+
     def printBoard(self):
         print()
         print("Move: ", self.moves)
@@ -43,8 +43,6 @@ class Game:
                     positions.append([r,c])
                 c += 1
             r += 1
-        if len(positions) == 0:
-            print("There is no " + piece + " piece")
         return positions
     def change_pieces(self, piece, pos, pos2):
         if pos2[0] not in [0, 1, 2, 3] or pos2[1] not in [0, 1, 2, 3]:
@@ -67,7 +65,7 @@ class Game:
         new_positions = self.select_piece(piece)
         if new_positions != positions:
             self.join_color(piece, new_positions)
-    
+
 
     def move(self, piece, movements):
         r = 0
