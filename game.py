@@ -47,6 +47,22 @@ class Game:
             if self.is_adjacent(p, piece):
                 return True
         return False
+    def is_block_adjacent(self, b1, b2):
+        for p in b1.pieces:
+            for p2 in b2.pieces:
+                if self.is_adjacent(p, p2):
+                    return True
+        return False
+    def add_block_pieces_to_block(self, b1, b2):
+        for p in b2.pieces:
+            b1.pieces.append(p)
+        self.blocks.remove(b2)
+    def clean_blocks(self):
+        for b1 in self.blocks:
+            for b2 in self.blocks:
+                if b1 != b2:
+                    if self.is_block_adjacent(b1, b2):
+                        self.add_block_pieces_to_block(b1,b2)
     def add_piece(self, piece):
         for block in self.blocks:
             if block.color == piece.color:
