@@ -24,3 +24,21 @@ def chooseAlg():
         return 'F'
     else:
         chooseAlg()
+
+
+def printBoard(board, moves):
+    print()
+    print("Moves: ", moves)
+    for row in board:
+        printRow(row)
+def printRow(row):
+    print("[", end='')
+    for col in row:
+        print(" " + col.color + " ",end='')
+    print("]")
+
+def printBlocks(blocks):
+    for block in blocks:
+        for pieces in block.pieces:
+            print(pieces)
+        print()

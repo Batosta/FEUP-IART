@@ -1,3 +1,6 @@
+import operator
+import copy
+
 import levels
 import utilities
 from piece import Piece
@@ -8,24 +11,16 @@ class Game:
         self.board = []
         self.blocks = []
         self.moves = 0
+
         self.createPieceBoard(board)
         self.createBlocks()
-        for a in self.blocks:
-            for b in a.pieces:
-                print(b)
-            print()
-        # self.printBlocks()
-        # self.printBoard()
-    	# self.checkWin(3)
         # self.algorithm = utilities.chooseAlg()
 
-    def printBlocks(self):
-        # for block in self.blocks:
-        #     for piece in block.pieces:
-        #         print(piece.color)
-        #     print()
-        for block in self.blocks:
-            print(block)
+        utilities.printBoard(self.board, self.moves)
+        utilities.printBlocks(self.blocks)
+        self.tryMoveBlock(self.blocks[0], "right")
+        utilities.printBoard(self.board, self.moves)
+        utilities.printBlocks(self.blocks)
 
     def createBlocks(self):
         r = 0
@@ -33,25 +28,26 @@ class Game:
             c = 0
             for col in row:
                 if self.board[r][c].color != '0':
-                    self.add_piece(self.board[r][c])
+                    newPiece = copy.deepcopy(self.board[r][c])
+                    self.add_piece(newPiece)
                 c += 1
             r += 1
-
+        self.clean_blocks()
     def is_adjacent(self, piece, piece2):
         if ((abs(piece.coords[0] - piece2.coords[0]) + abs(piece.coords[1]- piece2.coords[1])) < 2):
             return True
         else:
             return False
     def in_block(self, block, piece):
-        for p in block.pieces:
-            if self.is_adjacent(p, piece):
-                return True
+        if block.color == piece.color:
+            for p in block.pieces:
+                if self.is_adjacent(p, piece):
+                    return True
         return False
     def is_block_adjacent(self, b1, b2):
-        for p in b1.pieces:
-            for p2 in b2.pieces:
-                if self.is_adjacent(p, p2):
-                    return True
+        for p2 in b2.pieces:
+            if self.in_block(b1, p2):
+                return True
         return False
     def add_block_pieces_to_block(self, b1, b2):
         for p in b2.pieces:
@@ -65,10 +61,9 @@ class Game:
                         self.add_block_pieces_to_block(b1,b2)
     def add_piece(self, piece):
         for block in self.blocks:
-            if block.color == piece.color:
-                if self.in_block(block, piece):
-                    block.pieces.append(piece)
-                    return
+            if self.in_block(block, piece):
+                block.pieces.append(piece)
+                return
         newBlock = Block([piece], piece.color)
         self.blocks.append(newBlock)
         
@@ -84,35 +79,60 @@ class Game:
     		self.board.append(newRow)
     		r += 1
 
+    def tryMoveBlock(self, block, direction):
+        canMove = True
+        for piece in block.pieces:
+            row = piece.coords[0]
+            col = piece.coords[1]
+            if direction == "up":
+                if not ((row - 1) >= 0 and (self.board[row-1][col].color == piece.color or self.board[row-1][col].color == '0')):
+                    canMove = False
+            elif direction == "down":
+                if not ((row + 1) <= 3 and (self.board[row+1][col].color == piece.color or self.board[row+1][col].color == '0')):
+                    canMove = False
+            elif direction == "left":
+                if not ((col - 1) >= 0 and (self.board[row][col-1].color == piece.color or self.board[row][col-1].color == '0')):
+                    canMove = False
+            elif direction == "right":
+                if not ((col + 1) <= 3 and (self.board[row][col+1].color == piece.color or self.board[row][col+1].color == '0')):
+                    canMove = False
+        if canMove:
+            self.moveBlock(block, direction)
     def moveBlock(self, block, direction):
+        self.moves += 1
         if direction == "up":
-            self.moveUp(block)
+            self.moveBlockUp(block)
         elif direction == "down":
-            self.moveDown(block)
+            self.moveBlockDown(block)
         elif direction == "left":
-            self.moveLeft(block)
+            self.moveBlockLeft(block)
         elif direction == "right":
-            self.moveRight(block)
-
-    def moveUp(self, block):
-        a = 1
-    def moveDown(self, block):
-        a = 1
-    def moveLeft(self, block):
-        a = 1
-    def moveRight(self, block):
-        a = 1
-
-    def printBoard(self):
-        print()
-        print("Moves: ", self.moves)
-        for row in self.board:
-            self.printRow(row)
-    def printRow(self, row):
-        print("[", end='')
-        for col in row:
-            print(" " + col.color + " ",end='')
-        print("]")
+            self.moveBlockRight(block)
+    def moveBlockUp(self, block):
+        for piece in block.pieces:
+            self.board[piece.coords[0]][piece.coords[1]].color = '0'
+        for piece in block.pieces:
+            piece.coords[0] -= 1
+            self.board[piece.coords[0]][piece.coords[1]].color = block.color
+    def moveBlockDown(self, block):
+        for piece in block.pieces:
+            self.board[piece.coords[0]][piece.coords[1]].color = '0'
+        for piece in block.pieces:
+            piece.coords[0] += 1
+            self.board[piece.coords[0]][piece.coords[1]].color = block.color
+    def moveBlockLeft(self, block):
+        for piece in block.pieces:
+            self.board[piece.coords[0]][piece.coords[1]].color = '0'
+        for piece in block.pieces:
+            piece.coords[1] -= 1
+            self.board[piece.coords[0]][piece.coords[1]].color = block.color
+    def moveBlockRight(self, block):
+        for piece in block.pieces:
+            self.board[piece.coords[0]][piece.coords[1]].color = '0'
+        for piece in block.pieces:
+            piece.coords[1] += 1
+            self.board[piece.coords[0]][piece.coords[1]].color = block.color
+ 
 
     def checkWin(self):
         colors = []
@@ -124,4 +144,4 @@ class Game:
         input("You won! Press Enter to continue...")
         exit()
 
-p1 = Game(levels.lvl1)
+p1 = Game(levels.test)
