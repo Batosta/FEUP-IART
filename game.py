@@ -13,7 +13,7 @@ class Game:
         # Para escolher o algoritmo a ser usado:
         # self.algorithm = utilities.chooseAlg()
         self.board = []
-        self.blocks = []    
+        self.blocks = []
         self.moves = 0
         self.solved = False
 
@@ -25,8 +25,8 @@ class Game:
         # print(heuristicValue)
 
         # Para fazer um move e juntar os blocks:
-        # self.tryMoveBlock(self.blocks[1], "left")
-        # self.clean_blocks()
+        self.tryMoveBlock(self.blocks[1], "left")
+        self.clean_blocks()
 
         # Para mostrar o board e moves | Mostrar os blocos existentes:
         # utilities.printBoard(self.board, self.moves)
@@ -84,7 +84,7 @@ class Game:
                 return
         newBlock = Block([piece], piece.color)
         self.blocks.append(newBlock)
-        
+
     def createPieceBoard(self, board):
     	r = 0
     	for row in board:
@@ -150,7 +150,7 @@ class Game:
         for piece in block.pieces:
             piece.coords[1] += 1
             self.board[piece.coords[0]][piece.coords[1]].color = block.color
- 
+
 
     def checkWin(self):
         colors = []
@@ -160,5 +160,7 @@ class Game:
             else:
                 return False
         return True
+    def update(self):
+        return utilities.getBoardArray(self.board)
 
 p1 = Game(levels.test)
