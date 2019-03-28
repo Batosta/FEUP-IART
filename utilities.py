@@ -42,3 +42,12 @@ def printBlocks(blocks):
         for pieces in block.pieces:
             print(pieces)
         print()
+
+def getBoardArray(gameBoard):
+    board = []
+    for row in gameBoard:
+        boardRow = []
+        for piece in row:
+            boardRow.append(piece.color)
+        board.append(boardRow)
+    return board

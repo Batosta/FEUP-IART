@@ -29,6 +29,12 @@ class Node(object):
         self.__children.append(obj)
 
 
+    def heuristic(self):
+        a = 1
+        return a
+
+
+
 
 #Class tree, holds all of the nodes at the same level to simplify search algorithms
 class Tree(object):
@@ -72,5 +78,3 @@ class Tree(object):
 
     def __setitem__(self, key, item):
         self.__nodes[key] = item
-
-    
