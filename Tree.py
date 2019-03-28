@@ -25,14 +25,28 @@ class Node(object):
     def children(self):
         return self.__children
 
+    @property
+    def game(self):
+        return self.__game
+
     def add_child(self, obj):
         self.__children.append(obj)
 
-
     def heuristic(self):
-        a = 1
-        return a
 
+        heuristicValue = 0
+
+        game = self.game
+        blocks = game.blocks
+        size = len(blocks)
+
+        for i in range(size):
+            for k in range(i+1, size): 
+                if blocks[k].color == blocks[i].color:
+                    heuristicValue += blocks[i].distance(blocks[k])
+
+        return heuristicValue
+    
 
 
 
@@ -72,9 +86,36 @@ class Tree(object):
             expansion = self[queue[0]].children
             queue = expansion + queue[1:]
 
+    
+    #recursive aux for progressive deepening
+    def DLS(self, root, target, max_depth):
+        if root == target : return True
+        
+        if max_depth <= 0 : return False
+
+        for i in self[root]:
+            if(self.DLS(i,target, max_depth-1)):
+                return True
+        return False
+    
+    #progressive deepening
+    def IDDFS(self, root, target, max_depth):
+        for i in range(max_depth):
+            if (self.DLS(root, target, i)):
+                return True
+        return False
+
+    #def uniform_cost_search(self, identifier):
+
+    #def greedy(self, identifier):
+
+    #def a_star(self, identifier):
+
 
     def __getitem__(self, key):
         return self.__nodes[key]
 
     def __setitem__(self, key, item):
         self.__nodes[key] = item
+
+    
