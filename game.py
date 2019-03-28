@@ -1,5 +1,6 @@
 import operator
 import copy
+import time
 
 import levels
 import utilities
@@ -8,19 +9,32 @@ from block import Block
 
 class Game:
     def __init__(self, board):
+        self.algorithm = utilities.chooseAlg()
         self.board = []
         self.blocks = []
         self.moves = 0
+        self.solved = False
 
         self.createPieceBoard(board)
         self.createBlocks()
-        # self.algorithm = utilities.chooseAlg()
+        utilities.printBoard(self.board, self.moves)
 
-        utilities.printBoard(self.board, self.moves)
-        utilities.printBlocks(self.blocks)
-        self.tryMoveBlock(self.blocks[0], "right")
-        utilities.printBoard(self.board, self.moves)
-        utilities.printBlocks(self.blocks)
+        # Para escolher o algoritmo a ser usado:
+
+        # Para fazer um move e juntar os blocks:
+        # self.tryMoveBlock(self.blocks[1], "left")
+        # self.clean_blocks()
+
+        # Para mostrar o board e moves | Mostrar os blocos existentes:
+        # utilities.printBoard(self.board, self.moves)
+        # utilities.printBlocks(self.blocks)
+
+        while not self.solved:
+            self.tryMoveBlock(self.blocks[1], "left")
+            utilities.printBoard(self.board, self.moves)
+            self.clean_blocks()
+            self.solved = self.checkWin
+
 
     def createBlocks(self):
         r = 0
@@ -140,8 +154,7 @@ class Game:
             if block.color not in colors:
                 colors.append(block.color)
             else:
-                return
-        input("You won! Press Enter to continue...")
-        exit()
+                return False
+        return True
 
 p1 = Game(levels.test)

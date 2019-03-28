@@ -11,17 +11,17 @@ def chooseAlg():
     ans=input()
     
     if ans == "A" or ans == "a":
-        return 'A'
+        return 1
     elif ans == "B" or ans == "b":
-        return 'B'
+        return 2
     elif ans == "C" or ans == "c":
-        return 'C'
+        return 3
     elif ans == "D" or ans == "d":
-        return 'D'
+        return 4
     elif ans == "E" or ans == "e":
-        return 'E'
+        return 5
     elif ans == "F" or ans == "f":
-        return 'F'
+        return 6
     else:
         chooseAlg()
 
