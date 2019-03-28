@@ -6,6 +6,7 @@ import levels
 import utilities
 from piece import Piece
 from block import Block
+from tree import Node
 
 class Game:
     def __init__(self, board):
@@ -19,7 +20,9 @@ class Game:
         self.createPieceBoard(board)
         self.createBlocks()
 
-        utilities.getBoardArray(self.board)
+        # node = Node(self)
+        # heuristicValue = node.heuristic()
+        # print(heuristicValue)
 
         # Para fazer um move e juntar os blocks:
         # self.tryMoveBlock(self.blocks[1], "left")
