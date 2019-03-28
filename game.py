@@ -9,17 +9,16 @@ from block import Block
 
 class Game:
     def __init__(self, board):
+        # Para escolher o algoritmo a ser usado:
         self.algorithm = utilities.chooseAlg()
         self.board = []
-        self.blocks = []
+        self.blocks = []    
         self.moves = 0
         self.solved = False
 
         self.createPieceBoard(board)
         self.createBlocks()
         utilities.printBoard(self.board, self.moves)
-
-        # Para escolher o algoritmo a ser usado:
 
         # Para fazer um move e juntar os blocks:
         # self.tryMoveBlock(self.blocks[1], "left")
