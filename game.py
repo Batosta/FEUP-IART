@@ -20,7 +20,7 @@ class Game:
         self.createPieceBoard(board)
         self.createBlocks()
 
-        self.tree = Tree()
+        self.tree = Tree(self)
         self.tree.breadth_first(None)
 
         # heuristicValue = node.heuristic()

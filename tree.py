@@ -52,8 +52,9 @@ class Node(object):
 #Class tree, holds all of the nodes at the same level to simplify search algorithms
 class Tree(object):
 
-    def __init__(self):
+    def __init__(self, game):
         self.__nodes = {}
+        self.add_node(game, None)
 
     @property
     def nodes(self):
@@ -106,8 +107,56 @@ class Tree(object):
 
     #def uniform_cost_search(self, identifier):
 
-    #def greedy(self, identifier):
+    #Para aplicar será necessário criar uma instância de tree(root) e depois chamar a função
+    #Ainda não testei, tenho de instalar a merda do pygame
+    def greedy(self, game, id):
+        
+        if(game.checkWin()): return game
+        
+        node = self[id]
+        currentGame = node.game()
+        bestOption = None
 
+        for block in currentGame.blocks:
+
+            gameUp = currentGame, gameDown = currentGame, gameRight = currentGame, gameLeft = currentGame
+            up = gameUp.tryMoveBlock(block, "up")
+            down = gameDown.tryMoveBlock(block, "down")
+            right = gameRight.tryMoveBlock(block, "right")
+            left = gameLeft.tryMoveBlock(block, "left")
+
+            heuristicValues = []
+
+            if(up == 1): 
+                nodeUp = Node(gameUp)
+                h1 = nodeUp.heuristic()
+                heuristicValues.append([nodeUp,h1])
+
+            if(down == 1): 
+                nodeDown = Node(gameDown)
+                h2 = nodeDown.heuristic()
+                heuristicValues.append([nodeDown,h2])
+
+            if(right == 1): 
+                nodeRight = Node(gameRight)
+                h3 = nodeRight.heuristic()
+                heuristicValues.append([nodeRight,h3])
+
+            if(left == 1): 
+                nodeLeft = Node(gameLeft)
+                h4 = nodeLeft.heuristic()
+                heuristicValues.append([nodeLeft,h4])
+
+            bestHeuristic = 100000000
+            for i in range(len(heuristicValues)):
+                if (heuristicValues[i][1] < bestHeuristic):
+                    bestHeuristic = heuristicValues[i][1]
+                    bestOption = heuristicValues[i][0]
+
+        self.add_node(bestOption.game(), node)
+
+        return self.greedy(bestOption.game(), bestOption.identifier())
+            
     #def a_star(self, identifier):
 
 
