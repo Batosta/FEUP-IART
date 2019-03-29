@@ -6,7 +6,7 @@ import levels
 import utilities
 from piece import Piece
 from block import Block
-from tree import Node
+from tree import Tree
 
 class Game:
     def __init__(self, board):
@@ -20,7 +20,9 @@ class Game:
         self.createPieceBoard(board)
         self.createBlocks()
 
-        # node = Node(self)
+        self.tree = Tree()
+        self.tree.breadth_first(None)
+
         # heuristicValue = node.heuristic()
         # print(heuristicValue)
 
@@ -98,24 +100,23 @@ class Game:
     		r += 1
 
     def tryMoveBlock(self, block, direction):
-        canMove = True
         for piece in block.pieces:
             row = piece.coords[0]
             col = piece.coords[1]
             if direction == "up":
                 if not ((row - 1) >= 0 and (self.board[row-1][col].color == piece.color or self.board[row-1][col].color == '0')):
-                    canMove = False
+                    return 0
             elif direction == "down":
                 if not ((row + 1) <= 3 and (self.board[row+1][col].color == piece.color or self.board[row+1][col].color == '0')):
-                    canMove = False
+                    return 0
             elif direction == "left":
                 if not ((col - 1) >= 0 and (self.board[row][col-1].color == piece.color or self.board[row][col-1].color == '0')):
-                    canMove = False
+                    return 0
             elif direction == "right":
                 if not ((col + 1) <= 3 and (self.board[row][col+1].color == piece.color or self.board[row][col+1].color == '0')):
-                    canMove = False
-        if canMove:
-            self.moveBlock(block, direction)
+                    return 0
+        self.moveBlock(block, direction)
+        return 1
     def moveBlock(self, block, direction):
         self.moves += 1
         if direction == "up":

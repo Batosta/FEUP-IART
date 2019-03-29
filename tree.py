@@ -2,6 +2,8 @@
 # You Programming (http://www.youprogramming.com)
 # May 03, 2014
 
+import utilities
+
 id = 0
 
 # Class node gets the argument game which represents the class game.
@@ -46,8 +48,6 @@ class Node(object):
 
         return heuristicValue
     
-
-
 
 #Class tree, holds all of the nodes at the same level to simplify search algorithms
 class Tree(object):
