@@ -14,32 +14,25 @@ class Game:
         # self.algorithm = utilities.chooseAlg()
         self.board = []
         self.blocks = []
-        self.moves = 0
         self.solved = False
 
         self.createPieceBoard(board)
         self.createBlocks()
 
-        self.tree = Tree(self)
-        self.tree.breadth_first(None)
+        self.tree = Tree()
+        finalState = self.tree.breadth_first([self], 0)
+        utilities.printBoard(finalState.board)
 
         # heuristicValue = node.heuristic()
         # print(heuristicValue)
 
         # Para fazer um move e juntar os blocks:
-        self.tryMoveBlock(self.blocks[1], "left")
-        self.clean_blocks()
+        # if self.ableToMove(self.blocks[1], "left"):
+        #     self.moveBlock(self.blocks[1], "left")
 
-        # Para mostrar o board e moves | Mostrar os blocos existentes:
-        # utilities.printBoard(self.board, self.moves)
+        # Para mostrar o board | Mostrar os blocos existentes:
+        # utilities.printBoard(self.board)
         # utilities.printBlocks(self.blocks)
-
-        # while not self.solved:
-        #     self.tryMoveBlock(self.blocks[1], "left")
-        #     utilities.printBoard(self.board, self.moves)
-        #     self.clean_blocks()
-        #     self.solved = self.checkWin
-
 
 
     def createBlocks(self):
@@ -99,7 +92,7 @@ class Game:
     		self.board.append(newRow)
     		r += 1
 
-    def tryMoveBlock(self, block, direction):
+    def ableToMove(self, block, direction):
         for piece in block.pieces:
             row = piece.coords[0]
             col = piece.coords[1]
@@ -115,10 +108,9 @@ class Game:
             elif direction == "right":
                 if not ((col + 1) <= 3 and (self.board[row][col+1].color == piece.color or self.board[row][col+1].color == '0')):
                     return 0
-        self.moveBlock(block, direction)
         return 1
+
     def moveBlock(self, block, direction):
-        self.moves += 1
         if direction == "up":
             self.moveBlockUp(block)
         elif direction == "down":
@@ -127,6 +119,7 @@ class Game:
             self.moveBlockLeft(block)
         elif direction == "right":
             self.moveBlockRight(block)
+        self.clean_blocks()
     def moveBlockUp(self, block):
         for piece in block.pieces:
             self.board[piece.coords[0]][piece.coords[1]].color = '0'

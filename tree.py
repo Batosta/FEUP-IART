@@ -3,6 +3,7 @@
 # May 03, 2014
 
 import utilities
+import collections
 
 id = 0
 
@@ -54,7 +55,7 @@ class Tree(object):
 
     def __init__(self, game):
         self.__nodes = {}
-        self.add_node(game, None)
+        self.movesArray = []
 
     @property
     def nodes(self):
@@ -70,13 +71,44 @@ class Tree(object):
         
         return node
 
-    def breadth_first(self, identifier):
-        yield identifier
-        queue = self[identifier].children
-        while queue:
-            yield queue[0]
-            expansion = self[queue[0]].children
-            queue = queue[1:] + expansion
+    def breadth_first(self, start, moves):
+        moves += 1
+        currentLevel = start
+        nextLevel = []
+
+        for state in start:
+            for block in state.blocks:
+                if state.ableToMove(block, "up"):
+                    newState = state
+                    newState.moveBlock(block, "up")
+                    if newState.checkWin():
+                        return newState
+                    else:
+                        nextLevel.append(newState)
+                if state.ableToMove(block, "down"):
+                    newState = state
+                    newState.moveBlock(block, "down")
+                    if newState.checkWin():
+                        return newState
+                    else:
+                        nextLevel.append(newState)
+                if state.ableToMove(block, "right"):
+                    newState = state
+                    newState.moveBlock(block, "right")
+                    if newState.checkWin():
+                        return newState
+                    else:
+                        nextLevel.append(newState)
+                if state.ableToMove(block, "left"):
+                    newState = state
+                    newState.moveBlock(block, "left")
+                    if newState.checkWin():
+                        return newState
+                    else:
+                        nextLevel.append(newState)
+        self.breadth_first(nextLevel, moves)
+
+
 
     def depth_first(self, identifier):
         yield identifier
@@ -166,4 +198,17 @@ class Tree(object):
     def __setitem__(self, key, item):
         self.__nodes[key] = item
 
+
+
+class Queue:
+    def __init__(self):
+        self.elements = collections.deque()
     
+    def empty(self):
+        return len(self.elements) == 0
+    
+    def put(self, x):
+        self.elements.append(x)
+    
+    def get(self):
+        return self.elements.popleft()

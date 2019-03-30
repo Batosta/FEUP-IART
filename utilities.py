@@ -26,15 +26,13 @@ def chooseAlg():
         chooseAlg()
 
 
-def printBoard(board, moves):
-    print()
-    print("Moves: ", moves)
+def printBoard(board):
     for row in board:
         printRow(row)
 def printRow(row):
     print("[", end='')
     for col in row:
-        print(" " + col.color + " ",end='')
+        print(" " + col.color + " ", end='')
     print("]")
 
 def printBlocks(blocks):
