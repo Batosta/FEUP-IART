@@ -66,7 +66,7 @@ class Tree(object):
         states = [initState]
 
         i = 0
-        while(i < len(states)):
+        while i < len(states):
 
             newChildren = states[i].checkAllGameChilds()
             #child = [[board, moves, direction]]
@@ -77,28 +77,30 @@ class Tree(object):
                     states.append(child[0])
             i += 1
 
-
-    def limitedDepthFirst(self, initState, maxDepth):
+    def depthFirst(self, initState):
 
         if initState.checkWin():
             return initState
 
-        states = [initState]
+        visited = []
+        states = Stack()
+        states.push(initState)
 
-        i = 0
-        while(i < len(states)):
+        while not states.isEmpty():
 
-            newChildren = states[i].checkAllGameChilds()
-            #child = [[board, moves, direction]]
+            visited.append(states.peek())
+
+            newChildren = states.peek().checkAllGameChilds()
+            newChildren.reverse()
+
             for child in newChildren:
+
                 if child[0].checkWin():
                     return child[0]
-                elif child[0] not in states:
-                    states.append(child[0])
-            i += 1
+                elif child[0] not in visited:
+                    states.push(child[0])
 
 
-    
     #recursive aux for progressive deepening
     def DLS(self, root, target, max_depth):
         if root == target : return True
@@ -166,16 +168,21 @@ class Tree(object):
         self.__nodes[key] = item
 
 
-
-class Queue:
+class Stack:
     def __init__(self):
-        self.elements = collections.deque()
-    
-    def empty(self):
-        return len(self.elements) == 0
-    
-    def put(self, x):
-        self.elements.append(x)
-    
-    def get(self):
-        return self.elements.popleft()
+        self.items = []
+
+    def isEmpty(self):
+        return self.items == []
+
+    def push(self, item):
+        self.items.append(item)
+
+    def pop(self):
+        return self.items.pop()
+
+    def peek(self):
+        return self.items[len(self.items)-1]
+
+    def size(self):
+        return len(self.items)

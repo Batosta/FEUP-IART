@@ -19,7 +19,7 @@ class Game:
         self.createBlocks()
 
         self.tree = Tree(self)
-        finalState = self.tree.greedy([], self)
+        finalState = self.tree.depthFirst(self)
         print("finalState: ")
         utilities.printBoard(finalState.board)
 
