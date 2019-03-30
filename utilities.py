@@ -57,3 +57,11 @@ def getBoardArray(gameBoard):
             boardRow.append(piece.color)
         board.append(boardRow)
     return board
+
+def compareBoard(board1, board2):
+    for i in range(len(board1)):
+        for j in range(len(board1[i])):
+            if(board1[i][j] != board2[i][j]):
+                return False
+    return True
+

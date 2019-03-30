@@ -19,7 +19,7 @@ class Game:
         self.createBlocks()
 
         self.tree = Tree(self)
-        finalState = self.tree.breadthFirst(self)
+        finalState = self.tree.greedy([], self)
         print("finalState: ")
         utilities.printBoard(finalState.board)
 
@@ -187,4 +187,25 @@ class Game:
     def update(self):
         return utilities.getBoardArray(self.board)
 
-p1 = Game(levels.test)
+    def getBlock(self, coordinates):
+        for block in self.blocks:
+            for piece in block.pieces:
+                    if(piece.coords == coordinates):
+                        return block
+
+    def heuristic(self):
+
+        heuristicValue = 0 
+        blocks = self.blocks
+
+        for i in range(len(blocks)):
+            for k in range(i+1, len(blocks)): 
+                if blocks[k].color == blocks[i].color:
+                    heuristicValue += blocks[i].distance(blocks[k])
+
+        return heuristicValue
+
+    def __eq__(self, other):
+        return self.blocks == other.blocks
+
+p1 = Game(levels.lvl4)

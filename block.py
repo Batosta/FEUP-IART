@@ -15,3 +15,9 @@ class Block:
 					dist = distance
 		
 		return dist
+
+	def __eq__(self, other):
+		return self.pieces == other.pieces
+
+	def __repr__(self):
+		return str(self.pieces)

@@ -4,6 +4,9 @@
 
 import utilities
 import collections
+import copy
+import queue
+import levels
 
 id = 0
 
@@ -33,22 +36,6 @@ class Node(object):
 
     def add_child(self, obj):
         self.__children.append(obj)
-
-    def heuristic(self):
-
-        heuristicValue = 0
-
-        game = self.game
-        blocks = game.blocks
-        size = len(blocks)
-
-        for i in range(size):
-            for k in range(i+1, size): 
-                if blocks[k].color == blocks[i].color:
-                    heuristicValue += blocks[i].distance(blocks[k])
-
-        return heuristicValue
-    
 
 #Class tree, holds all of the nodes at the same level to simplify search algorithms
 class Tree(object):
@@ -132,59 +119,45 @@ class Tree(object):
 
     #def uniform_cost_search(self, identifier):
 
-    #Para aplicar será necessário criar uma instância de tree(root) e depois chamar a função
-    #Ainda não testei, tenho de instalar a merda do pygame
-    def greedy(self, game, moves):
-        
-        moves += 1
+    #falta quando parar nos casos que chega a um dead state    
+    def greedy(self, visited, initState):
 
-        if(game.checkWin()): return game
+        if initState.checkWin():
+            return initState
 
-        bestOption = None
+        states = [initState]
+        heuristicValue = 1000
+        nextState = None
 
-        for block in game.blocks:
+        i = 0
+        while(i < len(states)):
 
-            gameUp = game
-            gameDown = game 
-            gameRight = game 
-            gameLeft = game
+            newChildren = states[i].checkAllGameChilds()
+            #child = [[board, moves, direction]]
 
-            heuristicValues = []
+            for child in newChildren:
+                
+                if child[0].checkWin():
+                    return child[0]
 
-            if gameUp.ableToMove(block, "up"):
-                gameUp.moveBlock(block, "up")
-                nodeUp = Node(gameUp)
-                h1 = nodeUp.heuristic()
-                heuristicValues.append([nodeUp,h1])
+                tempHeuristic = child[0].heuristic()
 
-            if gameDown.ableToMove(block, "down"):
-                gameDown.moveBlock(block, "down")
-                nodeDown = Node(gameDown)
-                h2 = nodeDown.heuristic()
-                heuristicValues.append([nodeDown,h2])
-            
-            if gameRight.ableToMove(block, "right"):
-                gameRight.moveBlock(block, "right")
-                nodeRight = Node(gameRight)
-                h3 = nodeRight.heuristic()
-                heuristicValues.append([nodeRight,h3])
-            
-            if gameLeft.ableToMove(block, "left"):
-                gameLeft.moveBlock(block,"left")
-                nodeLeft = Node(gameLeft)
-                h4 = nodeLeft.heuristic()
-                heuristicValues.append([nodeLeft,h4])
+                if(tempHeuristic < heuristicValue):
+                    heuristicValue = tempHeuristic
+                    nextState = copy.deepcopy(child[0])
 
-            bestHeuristic = 100000000
-            for i in range(len(heuristicValues)):
-                if (heuristicValues[i][1] < bestHeuristic):
-                    bestHeuristic = heuristicValues[i][1]
-                    bestOption = heuristicValues[i][0]
+            i += 1
 
-        return self.greedy(bestOption.game, moves)
-            
+        if(nextState in visited):
+            print("Couldn't find solution")
+            return nextState
+        else: 
+            visited.append(nextState)
+            return self.greedy(visited, nextState)
+
+
     #def a_star(self, identifier):
-
+ 
 
     def __getitem__(self, key):
         return self.__nodes[key]
