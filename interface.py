@@ -10,6 +10,8 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 # define a main function
 def main():
 
+    # Para escolher o algoritmo a ser usado:
+    # self.algorithm = utilities.chooseAlg()
     pygame.board = levels.test
     game = Game(pygame.board)
 

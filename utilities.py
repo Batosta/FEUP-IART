@@ -41,6 +41,14 @@ def printBlocks(blocks):
             print(pieces)
         print()
 
+def printGameChilds(gameChilds):
+    for child in gameChilds:
+        print("move: " + child[2])
+        print("blockIndex: ", end="")
+        print(child[1])
+        printBoard(child[0].board)
+        print()
+
 def getBoardArray(gameBoard):
     board = []
     for row in gameBoard:

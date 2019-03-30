@@ -10,8 +10,7 @@ from tree import Tree
 
 class Game:
     def __init__(self, board):
-        # Para escolher o algoritmo a ser usado:
-        # self.algorithm = utilities.chooseAlg()
+        
         self.board = []
         self.blocks = []
         self.solved = False
@@ -20,7 +19,8 @@ class Game:
         self.createBlocks()
 
         self.tree = Tree(self)
-        finalState = self.tree.greedy(self, 0)
+        finalState = self.tree.breadthFirst(self)
+        print("finalState: ")
         utilities.printBoard(finalState.board)
 
         # heuristicValue = node.heuristic()
@@ -145,6 +145,36 @@ class Game:
             piece.coords[1] += 1
             self.board[piece.coords[0]][piece.coords[1]].color = block.color
 
+    def checkAllGameChilds(self):
+
+        gameChilds = []
+
+        blockIndex = 0
+        for block in self.blocks:
+
+            if self.ableToMove(block, "up"):
+                temporaryGame = copy.deepcopy(self)
+                temporaryGame.moveBlock(temporaryGame.blocks[blockIndex], "up")
+                gameChilds.append([temporaryGame, blockIndex, "up"])
+
+            if self.ableToMove(block, "down"):
+                temporaryGame = copy.deepcopy(self)
+                temporaryGame.moveBlock(temporaryGame.blocks[blockIndex], "down")
+                gameChilds.append([temporaryGame, blockIndex, "down"])
+
+            if self.ableToMove(block, "right"):
+                temporaryGame = copy.deepcopy(self)
+                temporaryGame.moveBlock(temporaryGame.blocks[blockIndex], "right")
+                gameChilds.append([temporaryGame, blockIndex, "right"])
+
+            if self.ableToMove(block, "left"):
+                temporaryGame = copy.deepcopy(self)
+                temporaryGame.moveBlock(temporaryGame.blocks[blockIndex], "left")
+                gameChilds.append([temporaryGame, blockIndex, "left"])
+
+            blockIndex += 1
+
+        return gameChilds
 
     def checkWin(self):
         colors = []

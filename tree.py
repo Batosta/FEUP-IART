@@ -55,7 +55,6 @@ class Tree(object):
 
     def __init__(self, game):
         self.__nodes = {}
-        self.movesArray = []
 
     @property
     def nodes(self):
@@ -71,52 +70,46 @@ class Tree(object):
         
         return node
 
-    def breadth_first(self, start, moves):
-        moves += 1
-        currentLevel = start
-        nextLevel = []
 
-        for state in start:
-            for block in state.blocks:
-                if state.ableToMove(block, "up"):
-                    newState = state
-                    newState.moveBlock(block, "up")
-                    if newState.checkWin():
-                        return newState
-                    else:
-                        nextLevel.append(newState)
-                if state.ableToMove(block, "down"):
-                    newState = state
-                    newState.moveBlock(block, "down")
-                    if newState.checkWin():
-                        return newState
-                    else:
-                        nextLevel.append(newState)
-                if state.ableToMove(block, "right"):
-                    newState = state
-                    newState.moveBlock(block, "right")
-                    if newState.checkWin():
-                        return newState
-                    else:
-                        nextLevel.append(newState)
-                if state.ableToMove(block, "left"):
-                    newState = state
-                    newState.moveBlock(block, "left")
-                    if newState.checkWin():
-                        return newState
-                    else:
-                        nextLevel.append(newState)
-        self.breadth_first(nextLevel, moves)
+    def breadthFirst(self, initState):
+
+        if initState.checkWin():
+            return initState
+
+        states = [initState]
+
+        i = 0
+        while(i < len(states)):
+
+            newChildren = states[i].checkAllGameChilds()
+            #child = [[board, moves, direction]]
+            for child in newChildren:
+                if child[0].checkWin():
+                    return child[0]
+                elif child[0] not in states:
+                    states.append(child[0])
+            i += 1
 
 
+    def limitedDepthFirst(self, initState, maxDepth):
 
-    def depth_first(self, identifier):
-        yield identifier
-        queue = self[identifier].children
-        while queue:
-            yield queue[0]
-            expansion = self[queue[0]].children
-            queue = expansion + queue[1:]
+        if initState.checkWin():
+            return initState
+
+        states = [initState]
+
+        i = 0
+        while(i < len(states)):
+
+            newChildren = states[i].checkAllGameChilds()
+            #child = [[board, moves, direction]]
+            for child in newChildren:
+                if child[0].checkWin():
+                    return child[0]
+                elif child[0] not in states:
+                    states.append(child[0])
+            i += 1
+
 
     
     #recursive aux for progressive deepening
