@@ -19,8 +19,8 @@ class Game:
         self.createPieceBoard(board)
         self.createBlocks()
 
-        self.tree = Tree()
-        finalState = self.tree.breadth_first([self], 0)
+        self.tree = Tree(self)
+        finalState = self.tree.greedy(self, 0)
         utilities.printBoard(finalState.board)
 
         # heuristicValue = node.heuristic()

@@ -141,40 +141,43 @@ class Tree(object):
 
     #Para aplicar será necessário criar uma instância de tree(root) e depois chamar a função
     #Ainda não testei, tenho de instalar a merda do pygame
-    def greedy(self, game, id):
+    def greedy(self, game, moves):
         
+        moves += 1
+
         if(game.checkWin()): return game
-        
-        node = self[id]
-        currentGame = node.game()
+
         bestOption = None
 
-        for block in currentGame.blocks:
+        for block in game.blocks:
 
-            gameUp = currentGame, gameDown = currentGame, gameRight = currentGame, gameLeft = currentGame
-            up = gameUp.tryMoveBlock(block, "up")
-            down = gameDown.tryMoveBlock(block, "down")
-            right = gameRight.tryMoveBlock(block, "right")
-            left = gameLeft.tryMoveBlock(block, "left")
+            gameUp = game
+            gameDown = game 
+            gameRight = game 
+            gameLeft = game
 
             heuristicValues = []
 
-            if(up == 1): 
+            if gameUp.ableToMove(block, "up"):
+                gameUp.moveBlock(block, "up")
                 nodeUp = Node(gameUp)
                 h1 = nodeUp.heuristic()
                 heuristicValues.append([nodeUp,h1])
 
-            if(down == 1): 
+            if gameDown.ableToMove(block, "down"):
+                gameDown.moveBlock(block, "down")
                 nodeDown = Node(gameDown)
                 h2 = nodeDown.heuristic()
                 heuristicValues.append([nodeDown,h2])
-
-            if(right == 1): 
+            
+            if gameRight.ableToMove(block, "right"):
+                gameRight.moveBlock(block, "right")
                 nodeRight = Node(gameRight)
                 h3 = nodeRight.heuristic()
                 heuristicValues.append([nodeRight,h3])
-
-            if(left == 1): 
+            
+            if gameLeft.ableToMove(block, "left"):
+                gameLeft.moveBlock(block,"left")
                 nodeLeft = Node(gameLeft)
                 h4 = nodeLeft.heuristic()
                 heuristicValues.append([nodeLeft,h4])
@@ -185,9 +188,7 @@ class Tree(object):
                     bestHeuristic = heuristicValues[i][1]
                     bestOption = heuristicValues[i][0]
 
-        self.add_node(bestOption.game(), node)
-
-        return self.greedy(bestOption.game(), bestOption.identifier())
+        return self.greedy(bestOption.game, moves)
             
     #def a_star(self, identifier):
 
