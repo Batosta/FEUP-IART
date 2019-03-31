@@ -20,7 +20,12 @@ class Game:
         self.createBlocks()
 
         self.tree = Tree(self)
+        startAlgTime = time.time()
         self.tree.uniform_cost_search(self)
+        endAlgTime = time.time()
+        print("Time elapsed: ", end="")
+        print(round(endAlgTime-startAlgTime, 3),end="")
+        print("ms")
         self.solution = self.tree.solution()
 
         #print("finalState: ")
