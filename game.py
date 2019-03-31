@@ -19,9 +19,9 @@ class Game:
         self.createBlocks()
 
         self.tree = Tree(self)
-        finalState = self.tree.limitedDepthSearch(self, 4)
-        print("finalState: ")
-        utilities.printBoard(finalState.board)
+        self.tree.uniform_cost_search(self)
+        #print("finalState: ")
+        #utilities.printBoard(finalState.board)
 
         # heuristicValue = node.heuristic()
         # print(heuristicValue)

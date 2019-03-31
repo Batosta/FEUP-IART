@@ -140,7 +140,6 @@ class Tree(object):
                 if front[i][0] > front[j][0]:
                     i = j
             path = front[i]
-            print(path[0])
             front = front[:i] + front[i+1:]
             endnode = path[-1]
             if endnode.checkWin():
