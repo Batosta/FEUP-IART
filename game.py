@@ -19,9 +19,9 @@ class Game:
         self.createBlocks()
 
         self.tree = Tree(self)
-        self.tree.uniform_cost_search(self)
-        #print("finalState: ")
-        #utilities.printBoard(finalState.board)
+        finalState = self.tree.progressiveDeepening(self, 3)
+        print("finalState: ")
+        utilities.printBoard(finalState.board)
 
         # heuristicValue = node.heuristic()
         # print(heuristicValue)

@@ -130,6 +130,44 @@ class Tree(object):
                 elif child[0] not in visited:
                     states.push([child[0], value])
 
+    def progressiveDeepening(self, initState, progress):
+
+        if initState.checkWin():
+            return initState
+
+        currentProgress = progress
+        visited = []
+        toBeChecked = []
+        states = Stack()
+        states.push([initState, 0])
+
+        while True:
+
+            if states.isEmpty():
+                currentProgress += progress
+                toBeChecked.reverse()
+                for i in toBeChecked:
+                    states.push(i)
+                toBeChecked = []
+
+            if states.peek()[1] == currentProgress and states.peek()[1] != 0:
+                toBeChecked.append(states.peek())
+                states.pop()
+                continue
+
+            visited.append(states.peek()[0])
+            newChildren = states.peek()[0].checkAllGameChilds()
+            newChildren.reverse()
+            value = states.peek()[1] + 1
+            states.pop()
+
+            for newChild in newChildren:
+
+                if newChild[0].checkWin():
+                    return newChild[0]
+                elif newChild[0] not in visited:
+                    states.push([newChild[0], value])
+
     def uniform_cost_search(self, initState):
         front = [[0, initState]]
         expanded = []
