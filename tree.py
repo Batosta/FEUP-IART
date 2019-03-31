@@ -74,18 +74,33 @@ class Tree(object):
             return initState
 
         states = [initState]
+        parents = [initState]
 
         i = 0
-        while i < len(states):
+        going = True
+        while i < len(states) and going:
 
             newChildren = states[i].checkAllGameChilds()
             #child = [[board, moves, direction]]
             for child in newChildren:
                 if child[0].checkWin():
-                    return child[0]
+                    states.append(child[0])
+                    parents.append(states[i])
+                    going = False
                 elif child[0] not in states:
                     states.append(child[0])
+                    parents.append(states[i])
             i += 1
+
+        temp_sol = [states[-1].board]
+        parent = parents[-1]
+        while parent != initState:
+            temp_sol.append(parent.board)
+            parent = parents[states.index(parent)]
+        temp_sol.append(parent.board)
+        temp_sol.reverse()
+        for sol in temp_sol:
+            self.add_path(sol)
 
     def depthFirst(self, initState):
 
