@@ -10,18 +10,21 @@ from tree import Tree
 
 class Game:
     def __init__(self, board):
-        
+
         self.board = []
         self.blocks = []
         self.solved = False
+        self.solution = []
 
         self.createPieceBoard(board)
         self.createBlocks()
 
         self.tree = Tree(self)
-        finalState = self.tree.progressiveDeepening(self, 3)
-        print("finalState: ")
-        utilities.printBoard(finalState.board)
+        self.tree.uniform_cost_search(self)
+        self.solution = self.tree.solution()
+
+        #print("finalState: ")
+        #utilities.printBoard(finalState.board)
 
         # heuristicValue = node.heuristic()
         # print(heuristicValue)
@@ -184,8 +187,9 @@ class Game:
             else:
                 return False
         return True
-    def update(self):
-        return utilities.getBoardArray(self.board)
+
+    def update(self, n):
+        return utilities.getBoardArray(self.solution[n])
 
     def getBlock(self, coordinates):
         for block in self.blocks:
@@ -195,11 +199,11 @@ class Game:
 
     def heuristic(self):
 
-        heuristicValue = 0 
+        heuristicValue = 0
         blocks = self.blocks
 
         for i in range(len(blocks)):
-            for k in range(i+1, len(blocks)): 
+            for k in range(i+1, len(blocks)):
                 if blocks[k].color == blocks[i].color:
                     heuristicValue += blocks[i].distance(blocks[k])
 
@@ -208,4 +212,4 @@ class Game:
     def __eq__(self, other):
         return self.blocks == other.blocks
 
-p1 = Game(levels.lvl1)
+p1 = Game(levels.lvl2)

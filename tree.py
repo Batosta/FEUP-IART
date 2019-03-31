@@ -20,7 +20,7 @@ class Node(object):
         id += 1
 
         self.__identifier = id
-        self.__game = game 
+        self.__game = game
         self.__children = []
 
     @property
@@ -43,6 +43,14 @@ class Tree(object):
 
     def __init__(self, game):
         self.__nodes = {}
+        self.__solution = []
+
+
+    def solution(self):
+        return self.__solution
+
+    def add_path(self, board):
+        self.__solution.append(board)
 
     @property
     def nodes(self):
@@ -55,7 +63,7 @@ class Tree(object):
 
         if parent is not None:
             self[parent].add_child(node.identifier)
-        
+
         return node
 
 
@@ -130,44 +138,6 @@ class Tree(object):
                 elif child[0] not in visited:
                     states.push([child[0], value])
 
-    def progressiveDeepening(self, initState, progress):
-
-        if initState.checkWin():
-            return initState
-
-        currentProgress = progress
-        visited = []
-        toBeChecked = []
-        states = Stack()
-        states.push([initState, 0])
-
-        while True:
-
-            if states.isEmpty():
-                currentProgress += progress
-                toBeChecked.reverse()
-                for i in toBeChecked:
-                    states.push(i)
-                toBeChecked = []
-
-            if states.peek()[1] == currentProgress and states.peek()[1] != 0:
-                toBeChecked.append(states.peek())
-                states.pop()
-                continue
-
-            visited.append(states.peek()[0])
-            newChildren = states.peek()[0].checkAllGameChilds()
-            newChildren.reverse()
-            value = states.peek()[1] + 1
-            states.pop()
-
-            for newChild in newChildren:
-
-                if newChild[0].checkWin():
-                    return newChild[0]
-                elif newChild[0] not in visited:
-                    states.push([newChild[0], value])
-
     def uniform_cost_search(self, initState):
         front = [[0, initState]]
         expanded = []
@@ -188,10 +158,10 @@ class Tree(object):
                 newpath = [path[0] + 1] + path[1:] + [k[0]]
                 front.append(newpath)
                 expanded.append(endnode)
-        print("Solution:")
-        print(utilities.printBoard(path[len(path)-1].board))
+        for game in path[1:]:
+            self.add_path(game.board)
 
-    #falta quando parar nos casos que chega a um dead state    
+    #falta quando parar nos casos que chega a um dead state
     def greedy(self, visited, initState):
 
         if initState.checkWin():
@@ -208,7 +178,7 @@ class Tree(object):
             #child = [[board, moves, direction]]
 
             for child in newChildren:
-                
+
                 if child[0].checkWin():
                     return child[0]
 
@@ -223,7 +193,7 @@ class Tree(object):
         if(nextState in visited):
             print("Couldn't find solution")
             return nextState
-        else: 
+        else:
             visited.append(nextState)
             return self.greedy(visited, nextState)
 
@@ -248,8 +218,7 @@ class Tree(object):
                 newpath = [path[0] + k[0].heuristic() - endnode.heuristic()] + path[1:] + [k[0]]
                 front.append(newpath)
                 expanded.append(endnode)
-        print("Solution:")
-        print(utilities.printBoard(path[len(path)-1].board))
+
 
     def __getitem__(self, key):
         return self.__nodes[key]

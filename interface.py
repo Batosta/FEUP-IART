@@ -12,7 +12,7 @@ def main():
 
     # Para escolher o algoritmo a ser usado:
     # self.algorithm = utilities.chooseAlg()
-    pygame.board = levels.test
+    pygame.board = levels.lvl2
     game = Game(pygame.board)
 
     BACKGROUND = (0, 0, 0)
@@ -50,25 +50,34 @@ def main():
                 c += 1
             r += 1
 
-    def update():
-        pygame.board = game.update()
+    def update(n):
+        pygame.board = game.update(n)
+
     # define a variable to control the main loop
     running = True
 
+    walking = 0
     # main loop
     while running:
-        screen.fill(BACKGROUND)
-        draw_game(screen)
+
         # event handling, gets all event from the event queue
         for event in pygame.event.get():
             # only do something if the event is of type QUIT
             if event.type == pygame.QUIT:
                 # change the value to False, to exit the main loop
                 running = False
-        update()
+
+        screen.fill(BACKGROUND)
+        update(walking)
+        draw_game(screen)
         pygame.display.update()
+        walking += 1
+        if(walking == len(game.solution)):
+            running = False
         time.sleep(2)
 
+
+    time.sleep(2)
 
 # run the main function only if this module is executed as the main script
 # (if you import this as a module then nothing is executed)
