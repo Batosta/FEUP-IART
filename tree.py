@@ -7,6 +7,7 @@ import collections
 import copy
 import queue
 import levels
+from queue import PriorityQueue
 
 id = 0
 
@@ -104,7 +105,6 @@ class Tree(object):
 
     #limited depth
     def limitedDepthSearch(self, initState, limit):
-
         if initState.checkWin():
             return initState
 
@@ -130,7 +130,29 @@ class Tree(object):
                 elif child[0] not in visited:
                     states.push([child[0], value])
 
-    #def uniform_cost_search(self, identifier):
+    def uniform_cost_search(self, initState):
+        front = [[0, initState]]
+        expanded = []
+
+        while front:
+            i = 0
+            for j in range(1,len(front)):
+                if front[i][0] > front[j][0]:
+                    i = j
+            path = front[i]
+            print(path[0])
+            front = front[:i] + front[i+1:]
+            endnode = path[-1]
+            if endnode.checkWin():
+                break
+            if endnode in expanded: continue
+            for k in endnode.checkAllGameChilds():
+                if k[0] in expanded: continue
+                newpath = [path[0] + 1] + path[1:] + [k[0]]
+                front.append(newpath)
+                expanded.append(endnode)
+        print("Solution:")
+        print(utilities.printBoard(path[len(path)-1].board))
 
     #falta quando parar nos casos que chega a um dead state    
     def greedy(self, visited, initState):
@@ -169,8 +191,28 @@ class Tree(object):
             return self.greedy(visited, nextState)
 
 
-    #def a_star(self, identifier):
- 
+    def a_star(self, initState):
+        front = [[initState.heuristic(), initState]]
+        expanded = []
+
+        while front:
+            i = 0
+            for j in range(1,len(front)):
+                if front[i][0] > front[j][0]:
+                    i = j
+            path = front[i]
+            front = front[:i] + front[i+1:]
+            endnode = path[-1]
+            if endnode.checkWin():
+                break
+            if endnode in expanded: continue
+            for k in endnode.checkAllGameChilds():
+                if k[0] in expanded: continue
+                newpath = [path[0] + k[0].heuristic() - endnode.heuristic()] + path[1:] + [k[0]]
+                front.append(newpath)
+                expanded.append(endnode)
+        print("Solution:")
+        print(utilities.printBoard(path[len(path)-1].board))
 
     def __getitem__(self, key):
         return self.__nodes[key]
