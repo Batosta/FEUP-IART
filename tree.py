@@ -58,6 +58,7 @@ class Tree(object):
         return node
 
 
+    # usar visited (como no depth)
     def breadthFirst(self, initState):
 
         if initState.checkWin():
@@ -92,6 +93,7 @@ class Tree(object):
 
             newChildren = states.peek().checkAllGameChilds()
             newChildren.reverse()
+            states.pop()
 
             for child in newChildren:
 
@@ -100,24 +102,33 @@ class Tree(object):
                 elif child[0] not in visited:
                     states.push(child[0])
 
+    #limited depth
+    def limitedDepthSearch(self, initState, limit):
 
-    #recursive aux for progressive deepening
-    def DLS(self, root, target, max_depth):
-        if root == target : return True
-        
-        if max_depth <= 0 : return False
+        if initState.checkWin():
+            return initState
 
-        for i in self[root]:
-            if(self.DLS(i,target, max_depth-1)):
-                return True
-        return False
-    
-    #progressive deepening
-    def IDDFS(self, root, target, max_depth):
-        for i in range(max_depth):
-            if (self.DLS(root, target, i)):
-                return True
-        return False
+        visited = []
+        states = Stack()
+        states.push([initState, 0])
+
+        while not states.isEmpty():
+
+            value = states.peek()[1] + 1
+            if value > limit:
+                states.pop()
+                continue
+
+            newChildren = states.peek()[0].checkAllGameChilds()
+            newChildren.reverse()
+            states.pop()
+
+            for child in newChildren:
+
+                if child[0].checkWin():
+                    return child[0]
+                elif child[0] not in visited:
+                    states.push([child[0], value])
 
     #def uniform_cost_search(self, identifier):
 
