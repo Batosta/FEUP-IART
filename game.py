@@ -19,7 +19,7 @@ class Game:
         self.createBlocks()
 
         self.tree = Tree(self)
-        finalState = self.tree.depthFirst(self)
+        finalState = self.tree.limitedDepthSearch(self, 4)
         print("finalState: ")
         utilities.printBoard(finalState.board)
 
@@ -208,4 +208,4 @@ class Game:
     def __eq__(self, other):
         return self.blocks == other.blocks
 
-p1 = Game(levels.lvl4)
+p1 = Game(levels.lvl1)
