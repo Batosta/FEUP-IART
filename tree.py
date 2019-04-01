@@ -10,7 +10,11 @@ from queue import PriorityQueue
 
 id = 0
 
-# Class tree, holds all of the nodes at the same level to simplify search algorithms
+# Class node gets the argument game which represents the class game.
+# The argument game represents the state of the board.
+
+
+#Class tree, holds all of the nodes at the same level to simplify search algorithms
 class Tree(object):
 
     def __init__(self, game):
@@ -177,7 +181,8 @@ class Tree(object):
         nextState = None
 
         i = 0
-        while(i < len(states)):
+        going = True
+        while i < len(states) and going:
 
             newChildren = states[i].checkAllGameChilds()
             #child = [[board, moves, direction]]
@@ -185,7 +190,9 @@ class Tree(object):
             for child in newChildren:
 
                 if child[0].checkWin():
-                    return child[0]
+                    visited.append(child[0])
+                    going = False
+                    break
 
                 tempHeuristic = child[0].heuristic()
 
@@ -195,12 +202,15 @@ class Tree(object):
 
             i += 1
 
-        if(nextState in visited):
+        if(nextState in visited) and going:
             print("Couldn't find solution")
-            return nextState
-        else:
+
+        elif going:
             visited.append(nextState)
             return self.greedy(visited, nextState)
+
+        for sol in visited:
+            self.add_path(sol.board)
 
 
     def a_star(self, initState):
@@ -232,7 +242,6 @@ class Tree(object):
         self.__nodes[key] = item
 
 
-# Class stack, that works just like a stack
 class Stack:
     def __init__(self):
         self.items = []
