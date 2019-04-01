@@ -1,6 +1,6 @@
 def chooseAlg():
 
-    print("Please, choose which search method do you wish to use:")
+    print("\nPlease, choose which search method do you wish to use:")
     print("A) Breadth-first search.")
     print("B) Depth-first search.")
     print("C) Progressive deepening.")
@@ -24,6 +24,10 @@ def chooseAlg():
         return 6
     else:
         chooseAlg()
+
+def chooseLevel():
+    print("\nPlease, choose which level you wish to play (from 1 to 30):")
+    return input()
 
 
 def printBoard(board):

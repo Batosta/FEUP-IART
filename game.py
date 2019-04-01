@@ -8,7 +8,7 @@ from block import Block
 from tree import Tree
 
 class Game:
-    def __init__(self, board):
+    def __init__(self, board, algorithm):
 
         self.board = []
         self.blocks = []
@@ -20,7 +20,22 @@ class Game:
 
         self.tree = Tree(self)
         startAlgTime = time.time()
-        self.tree.depthFirst(self)
+
+        if algorithm == 1:
+            self.tree.breadthFirst(self)
+        elif algorithm == 2:
+            self.tree.depthFirst(self)
+        elif algorithm == 3:
+            self.tree.limitedDepthSearch(self, 3)
+        elif algorithm == 4:
+            self.tree.progressiveDeepening(self, 3)
+        elif algorithm == 5:
+            self.tree.uniform_cost_search(self)
+        elif algorithm == 6:
+            self.tree.greedy(self)
+        elif algorithm == 7:
+            self.tree.a_star(self)
+        
         endAlgTime = time.time()
         print("Time elapsed: ", end="")
         print(round(endAlgTime-startAlgTime, 3),end="")

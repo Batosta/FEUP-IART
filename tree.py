@@ -43,7 +43,6 @@ class Tree(object):
         return node
 
 
-    # usar visited (como no depth)
     def breadthFirst(self, initState):
 
         if initState.checkWin():
@@ -119,8 +118,6 @@ class Tree(object):
             for sol in path:
                 self.add_path(sol.board)
 
-
-    #limited depth
     def limitedDepthSearch(self, initState, limit):
         if initState.checkWin():
             return initState
@@ -147,6 +144,44 @@ class Tree(object):
                 elif child[0] not in visited:
                     states.push([child[0], value])
 
+    def progressiveDeepening(self, initState, progress): 
+ 
+        if initState.checkWin(): 
+            return initState 
+ 
+        currentProgress = progress 
+        visited = [] 
+        toBeChecked = [] 
+        states = Stack() 
+        states.push([initState, 0]) 
+ 
+        while True: 
+ 
+            if states.isEmpty(): 
+                currentProgress += progress 
+                toBeChecked.reverse() 
+                for i in toBeChecked: 
+                    states.push(i) 
+                toBeChecked = [] 
+ 
+            if states.peek()[1] == currentProgress and states.peek()[1] != 0: 
+                toBeChecked.append(states.peek()) 
+                states.pop() 
+                continue 
+ 
+            visited.append(states.peek()[0]) 
+            newChildren = states.peek()[0].checkAllGameChilds() 
+            newChildren.reverse() 
+            value = states.peek()[1] + 1 
+            states.pop() 
+ 
+            for newChild in newChildren: 
+ 
+                if newChild[0].checkWin(): 
+                    return newChild[0] 
+                elif newChild[0] not in visited: 
+                    states.push([newChild[0], value]) 
+
     def uniform_cost_search(self, initState):
         front = [[0, initState]]
         expanded = []
@@ -170,7 +205,6 @@ class Tree(object):
         for game in path[1:]:
             self.add_path(game.board)
 
-    #falta quando parar nos casos que chega a um dead state
     def greedy(self, visited, initState):
 
         if initState.checkWin():
@@ -212,7 +246,6 @@ class Tree(object):
         for sol in visited:
             self.add_path(sol.board)
 
-
     def a_star(self, initState):
         front = [[initState.heuristic(), initState]]
         expanded = []
@@ -233,7 +266,6 @@ class Tree(object):
                 newpath = [path[0] + k[0].heuristic() - endnode.heuristic()] + path[1:] + [k[0]]
                 front.append(newpath)
                 expanded.append(endnode)
-
 
     def __getitem__(self, key):
         return self.__nodes[key]

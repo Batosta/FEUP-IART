@@ -11,10 +11,12 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 def main():
 
     # Para escolher o algoritmo a ser usado:
-    # self.algorithm = utilities.chooseAlg()
+    algorithm = utilities.chooseAlg()
     allLevels = utilities.parseFile()
-    pygame.board = allLevels[0]
-    game = Game(pygame.board)
+    level = int(utilities.chooseLevel())
+    
+    pygame.board = allLevels[level-1]
+    game = Game(pygame.board, algorithm)
 
     BACKGROUND = (0, 0, 0)
     WHITE = (255,255,255)
