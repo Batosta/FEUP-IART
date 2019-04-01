@@ -1,7 +1,6 @@
 import operator
 import copy
 import time
-
 import utilities
 from piece import Piece
 from block import Block
@@ -19,46 +18,35 @@ class Game:
         self.createBlocks()
 
         self.tree = Tree(self)
-        startAlgTime = time.time()
 
-        if algorithm == 1:
-            self.tree.breadthFirst(self)
-        elif algorithm == 2:
-            self.tree.depthFirst(self)
-        elif algorithm == 3:
-            print("Insert the desired depth.")
-            n = self.userInputNumber()
-            self.tree.limitedDepthSearch(self, n)
-        elif algorithm == 4:
-            print("Insert the desired max depth.")
-            n = self.userInputNumber()
-            self.tree.progressiveDeepening(self, n)
-        elif algorithm == 5:
-            self.tree.uniform_cost_search(self)
-        elif algorithm == 6:
-            self.tree.greedy([], self)
-        elif algorithm == 7:
-            self.tree.a_star(self)
+        if algorithm != 0:
 
-        endAlgTime = time.time()
-        print("Time elapsed: ", end="")
-        print(round(endAlgTime-startAlgTime, 3),end="")
-        print("ms")
-        self.solution = self.tree.solution()
+            startAlgTime = time.time()
 
-        #print("finalState: ")
-        #utilities.printBoard(finalState.board)
+            if algorithm == 1:
+                self.tree.breadthFirst(self)
+            elif algorithm == 2:
+                self.tree.depthFirst(self)
+            elif algorithm == 3:
+                print("Insert the desired depth.")
+                n = self.userInputNumber()
+                self.tree.limitedDepthSearch(self, n)
+            elif algorithm == 4:
+                print("Insert the desired max depth.")
+                n = self.userInputNumber()
+                self.tree.progressiveDeepening(self, n)
+            elif algorithm == 5:
+                self.tree.uniform_cost_search(self)
+            elif algorithm == 6:
+                self.tree.greedy([], self)
+            elif algorithm == 7:
+                self.tree.a_star(self)
 
-        # heuristicValue = node.heuristic()
-        # print(heuristicValue)
-
-        # Para fazer um move e juntar os blocks:
-        # if self.ableToMove(self.blocks[1], "left"):
-        #     self.moveBlock(self.blocks[1], "left")
-
-        # Para mostrar o board | Mostrar os blocos existentes:
-        # utilities.printBoard(self.board)
-        # utilities.printBlocks(self.blocks)
+            endAlgTime = time.time()
+            print("Time elapsed: ", end="")
+            print(round(endAlgTime-startAlgTime, 3),end="")
+            print("ms")
+            self.solution = self.tree.solution()
 
 
     def createBlocks(self):
@@ -218,14 +206,35 @@ class Game:
                 return False
         return True
 
-    def update(self, n):
+    def updateAlg(self, n):
         return utilities.getBoardArray(self.solution[n])
+
+    def updatePlayer(self, block, opt):
+        
+        if opt == 1:
+            if self.ableToMove(block, "up"):
+                self.moveBlock(block, "up")
+        
+        elif opt == 2:
+            if self.ableToMove(block, "down"):
+                self.moveBlock(block, "down")
+
+        elif opt == 3:
+            if self.ableToMove(block, "right"):
+                self.moveBlock(block, "right")
+
+        elif opt == 4:
+            if self.ableToMove(block, "left"):
+                self.moveBlock(block, "left")
+                
+        return utilities.getBoardArray(self.board)
 
     def getBlock(self, coordinates):
         for block in self.blocks:
             for piece in block.pieces:
                     if(piece.coords == coordinates):
                         return block
+        return None
 
     def heuristic(self):
 

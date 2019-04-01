@@ -1,32 +1,40 @@
 def chooseAlg():
 
-    print("\nPlease, choose which search method do you wish to use:")
-    print("A) Breadth-first search.")
-    print("B) Depth-first search.")
-    print("C) Limited Depth search")
-    print("D) Progressive deepening.")
-    print("E) Uniform cost search.")
-    print("F) Greedy.")
-    print("G) A*.")
+    print("\nDo you wish to:\n1-Play\n2-Play an algorithm")
+    opt=input()
+    
+    if opt == "1": 
+        return 0
+    
+    elif opt == "2":
 
-    ans=input()
+        print("\nPlease, choose which search method do you wish to use:")
+        print("A) Breadth-first search.")
+        print("B) Depth-first search.")
+        print("C) Limited Depth search")
+        print("D) Progressive deepening.")
+        print("E) Uniform cost search.")
+        print("F) Greedy.")
+        print("G) A*.")
 
-    if ans == "A" or ans == "a":
-        return 1
-    elif ans == "B" or ans == "b":
-        return 2
-    elif ans == "C" or ans == "c":
-        return 3
-    elif ans == "D" or ans == "d":
-        return 4
-    elif ans == "E" or ans == "e":
-        return 5
-    elif ans == "F" or ans == "f":
-        return 6
-    elif ans == "G" or ans == "g":
-        return 7
-    else:
-        chooseAlg()
+        ans=input()
+
+        if ans == "A" or ans == "a":
+            return 1
+        elif ans == "B" or ans == "b":
+            return 2
+        elif ans == "C" or ans == "c":
+            return 3
+        elif ans == "D" or ans == "d":
+            return 4
+        elif ans == "E" or ans == "e":
+            return 5
+        elif ans == "F" or ans == "f":
+            return 6
+        elif ans == "G" or ans == "g":
+            return 7
+        else:
+            chooseAlg()
 
 def chooseLevel():
     print("\nPlease, choose which level you wish to play (from 1 to 30):")
