@@ -21,7 +21,7 @@ class Game:
 
         self.tree = Tree(self)
         startAlgTime = time.time()
-        self.tree.uniform_cost_search(self)
+        self.tree.depthFirst(self)
         endAlgTime = time.time()
         print("Time elapsed: ", end="")
         print(round(endAlgTime-startAlgTime, 3),end="")
@@ -184,6 +184,13 @@ class Game:
 
         return gameChilds
 
+    def gameChilds(self):
+        boards = []
+        newchilds = self.checkAllGameChilds()
+        for child in newchilds:
+            boards.append(child[0])
+        return boards
+
     def checkWin(self):
         colors = []
         for block in self.blocks:
@@ -216,5 +223,3 @@ class Game:
 
     def __eq__(self, other):
         return self.blocks == other.blocks
-
-p1 = Game(levels.lvl2)

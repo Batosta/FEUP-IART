@@ -87,6 +87,7 @@ class Tree(object):
                     states.append(child[0])
                     parents.append(states[i])
                     going = False
+                    break
                 elif child[0] not in states:
                     states.append(child[0])
                     parents.append(states[i])
@@ -110,8 +111,10 @@ class Tree(object):
         visited = []
         states = Stack()
         states.push(initState)
+        path = []
 
-        while not states.isEmpty():
+        going = True
+        while not states.isEmpty() and going:
 
             visited.append(states.peek())
 
@@ -119,12 +122,27 @@ class Tree(object):
             newChildren.reverse()
             states.pop()
 
+
             for child in newChildren:
 
                 if child[0].checkWin():
-                    return child[0]
+                    path.append(child[0])
+                    going = False
+                    break
                 elif child[0] not in visited:
                     states.push(child[0])
+
+        if not going:
+            while path[-1] != initState:
+                for parent in visited:
+                    childs = parent.gameChilds()
+                    if path[-1] in childs:
+                        path.append(parent)
+                        break
+            path.reverse()
+            for sol in path:
+                self.add_path(sol.board)
+
 
     #limited depth
     def limitedDepthSearch(self, initState, limit):
