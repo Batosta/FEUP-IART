@@ -2,8 +2,8 @@
 import pygame
 import time
 import game
+import utilities
 from game import Game
-import levels
 import os
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -12,7 +12,8 @@ def main():
 
     # Para escolher o algoritmo a ser usado:
     # self.algorithm = utilities.chooseAlg()
-    pygame.board = levels.lvl2
+    allLevels = utilities.parseFile()
+    pygame.board = allLevels[0]
     game = Game(pygame.board)
 
     BACKGROUND = (0, 0, 0)

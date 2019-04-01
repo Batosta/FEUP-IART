@@ -6,39 +6,11 @@ import utilities
 import collections
 import copy
 import queue
-import levels
 from queue import PriorityQueue
 
 id = 0
 
-# Class node gets the argument game which represents the class game.
-# The argument game represents the state of the board.
-class Node(object):
-
-    def __init__(self, game):
-        global id
-        id += 1
-
-        self.__identifier = id
-        self.__game = game
-        self.__children = []
-
-    @property
-    def identifier(self):
-        return self.__identifier
-
-    @property
-    def children(self):
-        return self.__children
-
-    @property
-    def game(self):
-        return self.__game
-
-    def add_child(self, obj):
-        self.__children.append(obj)
-
-#Class tree, holds all of the nodes at the same level to simplify search algorithms
+# Class tree, holds all of the nodes at the same level to simplify search algorithms
 class Tree(object):
 
     def __init__(self, game):
@@ -260,6 +232,7 @@ class Tree(object):
         self.__nodes[key] = item
 
 
+# Class stack, that works just like a stack
 class Stack:
     def __init__(self):
         self.items = []

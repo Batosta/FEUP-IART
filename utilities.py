@@ -65,3 +65,24 @@ def compareBoard(board1, board2):
                 return False
     return True
 
+def parseFile():
+    fileObject = open("levels.txt", "r")
+
+    lines = fileObject.readlines()
+    levels = []
+
+    for line in lines:
+
+        level = []
+        row = []
+        listed = list(line)
+
+        for i in listed:
+
+            if i == ',':
+                level.append(row)
+                row = []
+            else:
+                row.append(i)
+        levels.append(level)
+    return levels

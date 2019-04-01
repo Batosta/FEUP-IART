@@ -2,7 +2,6 @@ import operator
 import copy
 import time
 
-import levels
 import utilities
 from piece import Piece
 from block import Block
