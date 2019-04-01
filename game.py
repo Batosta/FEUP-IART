@@ -26,16 +26,20 @@ class Game:
         elif algorithm == 2:
             self.tree.depthFirst(self)
         elif algorithm == 3:
-            self.tree.limitedDepthSearch(self, 3)
+            print("Insert the desired depth.")
+            n = self.userInputNumber()
+            self.tree.limitedDepthSearch(self, n)
         elif algorithm == 4:
-            self.tree.progressiveDeepening(self, 3)
+            print("Insert the desired max depth.")
+            n = self.userInputNumber()
+            self.tree.progressiveDeepening(self, n)
         elif algorithm == 5:
             self.tree.uniform_cost_search(self)
         elif algorithm == 6:
-            self.tree.greedy(self)
+            self.tree.greedy([], self)
         elif algorithm == 7:
             self.tree.a_star(self)
-        
+
         endAlgTime = time.time()
         print("Time elapsed: ", end="")
         print(round(endAlgTime-startAlgTime, 3),end="")
@@ -234,6 +238,18 @@ class Game:
                     heuristicValue += blocks[i].distance(blocks[k])
 
         return heuristicValue
+
+    def userInputNumber(self):
+        while True:
+            x = input("Number: ")
+            number = None
+            try:
+                number = int(x)
+            except:
+                print(str(x) + " is not an integer")
+                continue
+            break
+        return number
 
     def __eq__(self, other):
         return self.blocks == other.blocks
