@@ -74,7 +74,7 @@ def main():
         walking += 1
         if(walking == len(game.solution)):
             running = False
-        time.sleep(2)
+        time.sleep(0.2)
 
 
     time.sleep(2)
