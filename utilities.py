@@ -3,13 +3,14 @@ def chooseAlg():
     print("\nPlease, choose which search method do you wish to use:")
     print("A) Breadth-first search.")
     print("B) Depth-first search.")
-    print("C) Progressive deepening.")
-    print("D) Uniform cost search.")
-    print("E) Greedy.")
-    print("F) A*.")
+    print("C) Limited Depth search")
+    print("D) Progressive deepening.")
+    print("E) Uniform cost search.")
+    print("F) Greedy.")
+    print("G) A*.")
 
     ans=input()
-    
+
     if ans == "A" or ans == "a":
         return 1
     elif ans == "B" or ans == "b":
@@ -22,6 +23,8 @@ def chooseAlg():
         return 5
     elif ans == "F" or ans == "f":
         return 6
+    elif ans == "G" or ans == "g":
+        return 7
     else:
         chooseAlg()
 
