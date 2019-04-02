@@ -28,11 +28,11 @@ class Game:
             elif algorithm == 2:
                 self.tree.depthFirst(self)
             elif algorithm == 3:
-                print("Insert the desired depth.")
+                print("Insert the desired max depth.")
                 n = self.userInputNumber()
                 self.tree.limitedDepthSearch(self, n)
             elif algorithm == 4:
-                print("Insert the desired max depth.")
+                print("Insert the desired depth.")
                 n = self.userInputNumber()
                 self.tree.progressiveDeepening(self, n)
             elif algorithm == 5:

@@ -126,6 +126,7 @@ def main():
 
         # define a variable to control the main loop
         running = True
+        get_tiles_coords()
 
         walking = 0
         # main loop
@@ -140,6 +141,7 @@ def main():
 
             screen.fill(BACKGROUND)
             updateAlg(walking)
+            get_tiles_coords()
             draw_game(screen)
             pygame.display.update()
             walking += 1
