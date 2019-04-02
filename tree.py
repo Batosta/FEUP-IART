@@ -168,15 +168,18 @@ class Tree(object):
     def progressiveDeepening(self, initState, progress):
 
         if initState.checkWin():
-            return initState
+            self.add_path(initState.board)
+            return
 
         currentProgress = progress
         visited = []
         toBeChecked = []
         states = Stack()
         states.push([initState, 0])
+        path = []
 
-        while True:
+        going = True
+        while going:
 
             if states.isEmpty():
                 currentProgress += progress
@@ -199,9 +202,23 @@ class Tree(object):
             for newChild in newChildren:
 
                 if newChild[0].checkWin():
-                    return newChild[0]
+                    path.append(newChild[0])
+                    going = False
+                    break
                 elif newChild[0] not in visited:
                     states.push([newChild[0], value])
+
+        if not going:
+            while path[-1] != initState:
+                for parent in visited:
+                    childs = parent.gameChilds()
+                    if path[-1] in childs:
+                        path.append(parent)
+                        break
+
+            path.reverse()
+            for sol in path:
+                self.add_path(sol.board)
 
     def uniform_cost_search(self, initState):
 
