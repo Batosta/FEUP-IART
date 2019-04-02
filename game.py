@@ -47,6 +47,8 @@ class Game:
             print(round(endAlgTime-startAlgTime, 3),end="")
             print("ms")
             self.solution = self.tree.solution()
+            print("Number of moves: ", end="")
+            print(len(self.solution))
 
 
     def createBlocks(self):

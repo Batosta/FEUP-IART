@@ -42,11 +42,11 @@ class Tree(object):
 
         return node
 
-
     def breadthFirst(self, initState):
 
         if initState.checkWin():
-            return initState
+            self.add_path(initState.board)
+            return
 
         states = [initState]
         parents = [initState]
@@ -81,7 +81,8 @@ class Tree(object):
     def depthFirst(self, initState):
 
         if initState.checkWin():
-            return initState
+            self.add_path(initState.board)
+            return
 
         visited = []
         states = Stack()
@@ -120,7 +121,8 @@ class Tree(object):
 
     def limitedDepthSearch(self, initState, limit):
         if initState.checkWin():
-            return initState
+            self.add_path(initState.board)
+            return
 
         visited = []
         states = Stack()
@@ -202,6 +204,11 @@ class Tree(object):
                     states.push([newChild[0], value])
 
     def uniform_cost_search(self, initState):
+
+        if initState.checkWin():
+            self.add_path(initState.board)
+            return
+
         front = [[0, initState]]
         expanded = []
 
@@ -227,7 +234,8 @@ class Tree(object):
     def greedy(self, visited, initState):
 
         if initState.checkWin():
-            return initState
+            self.add_path(initState.board)
+            return
 
         states = [initState]
         heuristicValue = 1000
@@ -260,12 +268,18 @@ class Tree(object):
 
         elif going:
             visited.append(nextState)
-            return self.greedy(visited, nextState)
+            self.greedy(visited, nextState)
+            return
 
         for sol in visited:
             self.add_path(sol.board)
 
     def a_star(self, initState):
+
+        if initState.checkWin():
+            self.add_path(initState.board)
+            return
+
         front = [[initState.heuristic(), initState]]
         expanded = []
 
