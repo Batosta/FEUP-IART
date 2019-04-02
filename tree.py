@@ -59,7 +59,6 @@ class Tree(object):
 
             nodesChecked += 1
             newChildren = states[i].checkAllGameChilds()
-            #child = [[board, moves, direction]]
             for child in newChildren:
                 if child[0].checkWin():
                     states.append(child[0])
@@ -285,7 +284,6 @@ class Tree(object):
 
             nodesChecked += 1
             newChildren = states[i].checkAllGameChilds()
-            #child = [[board, moves, direction]]
 
             for child in newChildren:
 
