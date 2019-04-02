@@ -12,7 +12,7 @@ def main():
     option = utilities.chooseAlg()
     allLevels = utilities.parseFile()
     level = int(utilities.chooseLevel())
-    
+
     pygame.board = allLevels[level-1]
     game = Game(pygame.board, option)
 
@@ -59,7 +59,7 @@ def main():
 
     def updateAlg(n):
         pygame.board = game.updateAlg(n)
-    
+
     def updatePlayer(block, opt):
         pygame.board = game.updatePlayer(block, opt)
 
@@ -111,16 +111,21 @@ def main():
 
             updatePlayer(block, command)
 
+            try:
+                block = game.getBlock(block.pieces[0].coords)
+            except:
+                pass
+
             get_tiles_coords()
-            
+
             command = 0
-            
+
             draw_game(screen)
             pygame.display.update()
 
-            if game.checkWin(): break        
-        
-        time.sleep(1)         
+            if game.checkWin(): break
+
+        time.sleep(1)
 
     if option != 0:
 
@@ -148,6 +153,7 @@ def main():
             if(walking == len(game.solution)):
                 running = False
             time.sleep(0.2)
+            print(pygame.board)
         time.sleep(2)
 
 # run the main function only if this module is executed as the main script
