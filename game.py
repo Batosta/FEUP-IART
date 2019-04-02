@@ -249,6 +249,18 @@ class Game:
 
         return heuristicValue
 
+    def heuristic2(self):
+
+        heuristicValue = 0
+        blocks = self.blocks
+
+        for i in range(len(blocks)):
+            for k in range(i+1, len(blocks)):
+                if blocks[k].color == blocks[i].color:
+                    heuristicValue += blocks[i].distance2(blocks[k])
+        return heuristicValue
+
+
     def userInputNumber(self):
         while True:
             x = input("Number: ")
