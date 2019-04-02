@@ -278,6 +278,7 @@ class Tree(object):
             front = front[:i] + front[i+1:]
             endnode = path[-1]
             if endnode.checkWin():
+                path.append(endnode)
                 break
             if endnode in expanded: continue
             for k in endnode.checkAllGameChilds():
@@ -285,6 +286,9 @@ class Tree(object):
                 newpath = [path[0] + k[0].heuristic() - endnode.heuristic()] + path[1:] + [k[0]]
                 front.append(newpath)
                 expanded.append(endnode)
+
+        for sol in path[1:]:
+            self.add_path(sol.board)
 
     def __getitem__(self, key):
         return self.__nodes[key]
