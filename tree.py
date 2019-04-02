@@ -42,6 +42,7 @@ class Tree(object):
 
         return node
 
+
     def breadthFirst(self, initState):
 
         if initState.checkWin():
@@ -124,8 +125,13 @@ class Tree(object):
             for sol in path:
                 self.add_path(sol.board)
 
+<<<<<<< Updated upstream
         print("Number of nodes visited: ",end="")
         print(len(visited))
+=======
+            print("pieces:")
+            print(len(visited))
+>>>>>>> Stashed changes
 
     def limitedDepthSearch(self, initState, limit):
         if initState.checkWin():
@@ -333,7 +339,12 @@ class Tree(object):
             path = front[i]
             front = front[:i] + front[i+1:]
             endnode = path[-1]
+<<<<<<< Updated upstream
             if endnode.checkWin():
+=======
+            if endnode.checkWin():   
+                path.append(endnode)
+>>>>>>> Stashed changes
                 break
             if endnode in expanded: continue
             for k in endnode.checkAllGameChilds():
