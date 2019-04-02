@@ -51,10 +51,12 @@ class Tree(object):
         states = [initState]
         parents = [initState]
 
+        nodesChecked = 0
         i = 0
         going = True
         while i < len(states) and going:
 
+            nodesChecked += 1
             newChildren = states[i].checkAllGameChilds()
             #child = [[board, moves, direction]]
             for child in newChildren:
@@ -77,6 +79,9 @@ class Tree(object):
         temp_sol.reverse()
         for sol in temp_sol:
             self.add_path(sol)
+
+        print("Number of nodes visited: ",end="")
+        print(nodesChecked)
 
     def depthFirst(self, initState):
 
@@ -118,6 +123,9 @@ class Tree(object):
             path.reverse()
             for sol in path:
                 self.add_path(sol.board)
+
+        print("Number of nodes visited: ",end="")
+        print(len(visited))
 
     def limitedDepthSearch(self, initState, limit):
         if initState.checkWin():
@@ -164,6 +172,8 @@ class Tree(object):
             for sol in path:
                 self.add_path(sol.board)
 
+        print("Number of nodes visited: ",end="")
+        print(len(visited))
 
     def progressiveDeepening(self, initState, progress):
 
@@ -220,6 +230,9 @@ class Tree(object):
             for sol in path:
                 self.add_path(sol.board)
 
+        print("Number of nodes visited: ",end="")
+        print(len(visited))
+
     def uniform_cost_search(self, initState):
 
         if initState.checkWin():
@@ -228,8 +241,10 @@ class Tree(object):
 
         front = [[0, initState]]
         expanded = []
+        nodesChecked = 0
 
         while front:
+            nodesChecked += 1
             i = 0
             for j in range(1,len(front)):
                 if front[i][0] > front[j][0]:
@@ -248,6 +263,9 @@ class Tree(object):
         for game in path[1:]:
             self.add_path(game.board)
 
+        print("Number of nodes visited: ",end="")
+        print(nodesChecked)
+
     def greedy(self, visited, initState):
 
         if initState.checkWin():
@@ -257,11 +275,13 @@ class Tree(object):
         states = [initState]
         heuristicValue = 1000
         nextState = None
+        nodesChecked = 0
 
         i = 0
         going = True
         while i < len(states) and going:
 
+            nodesChecked += 1
             newChildren = states[i].checkAllGameChilds()
             #child = [[board, moves, direction]]
 
@@ -291,6 +311,9 @@ class Tree(object):
         for sol in visited:
             self.add_path(sol.board)
 
+        print("Number of nodes visited: ",end="")
+        print(nodesChecked)
+
     def a_star(self, initState):
 
         if initState.checkWin():
@@ -299,8 +322,10 @@ class Tree(object):
 
         front = [[initState.heuristic(), initState]]
         expanded = []
+        nodesChecked = 0
 
         while front:
+            nodesChecked += 1
             i = 0
             for j in range(1,len(front)):
                 if front[i][0] > front[j][0]:
@@ -309,7 +334,6 @@ class Tree(object):
             front = front[:i] + front[i+1:]
             endnode = path[-1]
             if endnode.checkWin():
-                path.append(endnode)
                 break
             if endnode in expanded: continue
             for k in endnode.checkAllGameChilds():
@@ -320,6 +344,9 @@ class Tree(object):
 
         for sol in path[1:]:
             self.add_path(sol.board)
+
+        print("Number of nodes visited: ",end="")
+        print(nodesChecked)
 
     def __getitem__(self, key):
         return self.__nodes[key]
