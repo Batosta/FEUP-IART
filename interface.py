@@ -147,7 +147,7 @@ def main():
             walking += 1
             if(walking == len(game.solution)):
                 running = False
-            time.sleep(0.2)
+            time.sleep(0.75)
         time.sleep(2)
 
 # run the main function only if this module is executed as the main script

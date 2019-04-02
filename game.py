@@ -45,11 +45,10 @@ class Game:
             endAlgTime = time.time()
             print("Time elapsed: ", end="")
             print(round(endAlgTime-startAlgTime, 3),end="")
-            print("ms")
+            print("s")
             self.solution = self.tree.solution()
             print("Number of moves: ", end="")
-            print(len(self.solution))
-
+            print(len(self.solution)-1)
 
     def createBlocks(self):
         r = 0
