@@ -10,20 +10,21 @@ class Game:
         self.size = len(self.board)
         self.solution = self.createSolution()
 
-        self.breadthFirst(self.board)
-
+        self.aStar(self.board)
+        # self.breadthFirst(self.board)
 
     def breadthFirst(self, initState):
 
         startAlgTime = time.time()
         if initState == self.solution:
+            print("Path:")
             self.printBoard(initState)
-            return initState
+            print()
         
-        visitedNodes = []           # nós que já visitei
-        visitedNodesID = []         # ids dos nós que já visitei (tem indexes = aos de visitedNodes)
+        visitedNodes = []           # nodes already visited
+        visitedNodesID = []         # ID's of the nodes already visited
 
-        toVisitNodesID = [[initState,'0']]      # nós para visitar + id's
+        toVisitNodesID = [[initState,'0']]      # nodes that still need to be checked + their ID's
         
         stillSearching = True
 
@@ -32,8 +33,8 @@ class Game:
 
         while len(toVisitNodesID) != 0 and stillSearching:
 
-            visitedNodes.append(toVisitNodesID[0][0])       # estou a ir buscar o board
-            visitedNodesID.append(toVisitNodesID[0][1])     # estou a ir buscar o id do board
+            visitedNodes.append(toVisitNodesID[0][0])       # appending the board itself
+            visitedNodesID.append(toVisitNodesID[0][1])     # appending the ID of the board
 
             childs = self.checkAllBoardChilds(toVisitNodesID[0][0])
             toVisitNodesID.pop(0)
@@ -52,7 +53,7 @@ class Game:
 
         endAlgTime = time.time()
 
-        # get the path
+        # Get the path
         while solutionID != "0":
 
             solutionID = solutionID[:len(solutionID)-1]
@@ -60,17 +61,102 @@ class Game:
             path.append(visitedNodes[index])
         path.reverse()
 
-        # show the path
+        # Show the path
         print("Path:")
         for a in path:
             self.printBoard(a)
             print()
 
-        print("Number of visited nodes: ", end="")
-        print(len(visitedNodes), end=" nodes.\n")
+        self.showAlgInformation(len(path) - 1, len(visitedNodes), round(endAlgTime-startAlgTime, 3))
 
-        print("Time elapsed: ", end="")
-        print(round(endAlgTime-startAlgTime, 3), end=" seg.\n")
+
+    def aStar(self, initState):
+
+        startAlgTime = time.time()
+        if initState == self.solution:
+            print("Path:")
+            self.printBoard(initState)
+            print()
+
+        front = [[self.heuristic1(initState), initState]]
+        expanded = []
+        nodesChecked = 0
+
+        while front:
+            nodesChecked += 1
+            i = 0
+            for j in range(1,len(front)):
+                if front[i][0] > front[j][0]:
+                    i = j
+            path = front[i]
+            front = front[:i] + front[i+1:]
+            endnode = path[-1]
+
+            if self.checkWin(endnode):   
+                path.append(endnode)
+                break
+
+            if endnode in expanded: 
+                continue
+
+            for k in self.checkAllBoardChilds(endnode):
+                
+                if k in expanded: 
+                    continue
+
+                newpath = [path[0] + self.heuristic1(k) - self.heuristic1(endnode)] + path[1:] + [k]
+                front.append(newpath)
+                expanded.append(endnode)
+
+        endAlgTime = time.time()
+
+        # Get the path
+        finalPath = []
+        for sol in path[1:]:
+            finalPath.append(sol)
+
+        # Show the path
+        print("Path:")
+        for a in finalPath:
+            self.printBoard(a)
+            print()
+
+        self.showAlgInformation(len(finalPath) - 1, nodesChecked, round(endAlgTime-startAlgTime, 3))
+
+
+    # Number of pieces out of order
+    def heuristic1(self, board):
+
+        number = 0
+
+        for i in range(0, self.size):
+            for k in range(0, self.size):
+                if board[i][k] != self.solution[i][k]:
+                    number += 1
+
+        return number
+
+    # Sum of the Manhattan distances of the out of order pieces to their right order
+    def heuristic2(self, board):
+
+        distance = 0
+
+        for i in range(0, self.size):
+            for k in range(0, self.size):
+
+                if board[i][k] != self.solution[i][k]:
+                    inSolCoords = self.findInSolution(board[i][k])
+                    distance += abs(inSolCoords[0]-i) + abs(inSolCoords[1]-k)
+
+        return distance
+
+
+    def findInSolution(self, value):
+
+        for i in range(0, self.size):
+            for k in range(0, self.size):
+                if self.solution[i][k] == value:
+                    return [i, k]
 
 
     def checkAllBoardChilds(self, board):
@@ -96,8 +182,6 @@ class Game:
 
         return boardChilds
 
-
-
     def printBoard(self, board):
         for row in board:
             self.printRow(row)
@@ -109,8 +193,6 @@ class Game:
             else:
                 print(" " + str(col) + "  ", end='')
         print("]")
-
-
 
     def createBoard(self, board):
         newBoard = []
@@ -134,7 +216,6 @@ class Game:
             newSolution.append(newRow)
         return newSolution
 
-
     def ableToMove(self, board, direction):
 
         zeroCoords = self.getZeroCoords(board)
@@ -146,6 +227,8 @@ class Game:
         else:
             return True
 
+
+    # Move predicates
     def move(self, board, direction):
 
         zeroCoords = self.getZeroCoords(board)
@@ -204,5 +287,16 @@ class Game:
         else:
             return False
 
+    def showAlgInformation(self, nMoves, nVisitedNodes, timeElapsed):
+        
+        print("Number of moves: ", end="")
+        print(nMoves, end=" moves.\n")
 
-p1 = Game(levels.probl2)
+        print("Number of visited nodes: ", end="")
+        print(nVisitedNodes, end=" nodes.\n")
+
+        print("Time elapsed: ", end="")
+        print(timeElapsed, end=" seg.\n")
+
+
+p1 = Game(levels.probl4)
