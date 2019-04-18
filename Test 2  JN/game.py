@@ -4,15 +4,31 @@ import time
 import levels
 
 class Game:
-    def __init__(self, board):
+    # Constructor
+    def __init__(self):
         
+
+        board = self.chooseLevel()
+
         self.board = self.createBoard(board)
         self.size = len(self.board)
         self.solution = self.createSolution()
+        
+        algorithm = self.chooseAlg()
+        if algorithm == 1:
+            self.breadthFirst(self.board)
 
-        self.aStar(self.board)
-        # self.breadthFirst(self.board)
+        elif algorithm == 2:
+            n = self.chooseHeuristic()
+            self.nodesChecked = 0
+            self.greedy([], self.board, n)
 
+        elif algorithm == 3:
+            n = self.chooseHeuristic()
+            self.aStar([], self.board, n)
+
+
+    # Breadth First Search (bfs) algorithm
     def breadthFirst(self, initState):
 
         startAlgTime = time.time()
@@ -69,8 +85,8 @@ class Game:
 
         self.showAlgInformation(len(path) - 1, len(visitedNodes), round(endAlgTime-startAlgTime, 3))
 
-
-    def aStar(self, initState):
+    # A* algorithm
+    def aStar(self, initState, heuristic):
 
         startAlgTime = time.time()
         if initState == self.solution:
@@ -78,7 +94,10 @@ class Game:
             self.printBoard(initState)
             print()
 
-        front = [[self.heuristic1(initState), initState]]
+        if heuristic == 1:
+            front = [[self.heuristic1(initState), initState]]
+        elif heuristic == 2:
+            front = [[self.heuristic1(initState), initState]]
         expanded = []
         nodesChecked = 0
 
@@ -93,7 +112,6 @@ class Game:
             endnode = path[-1]
 
             if self.checkWin(endnode):   
-                path.append(endnode)
                 break
 
             if endnode in expanded: 
@@ -104,7 +122,10 @@ class Game:
                 if k in expanded: 
                     continue
 
-                newpath = [path[0] + self.heuristic1(k) - self.heuristic1(endnode)] + path[1:] + [k]
+                if heuristic == 1:
+                    newpath = [path[0] + self.heuristic1(k) - self.heuristic1(endnode)] + path[1:] + [k]
+                elif heuristic == 2:
+                    newpath = [path[0] + self.heuristic2(k) - self.heuristic2(endnode)] + path[1:] + [k]
                 front.append(newpath)
                 expanded.append(endnode)
 
@@ -117,11 +138,64 @@ class Game:
 
         # Show the path
         print("Path:")
-        for a in finalPath:
-            self.printBoard(a)
+        for k in finalPath:
+            self.printBoard(k)
             print()
 
         self.showAlgInformation(len(finalPath) - 1, nodesChecked, round(endAlgTime-startAlgTime, 3))
+
+    # Greedy algorithm
+    def greedy(self, visited, initState, heuristic):
+
+        startAlgTime = time.time()
+
+        if initState == self.solution:
+            return
+
+        states = [initState]
+        heuristicValue = 1000
+        nextState = None
+
+        i = 0
+        going = True
+        while i < len(states) and going:
+
+            self.nodesChecked += 1
+            newChildren = self.checkAllBoardChilds(states[i])
+            for child in newChildren:
+
+                if self.checkWin(child):
+                    visited.append(child)
+                    going = False
+                    break
+
+                if heuristic == 1:
+                    tempHeuristic = self.heuristic1(child)
+                elif heuristic == 2:
+                    tempHeuristic = self.heuristic2(child)
+
+                if(tempHeuristic < heuristicValue):
+                    heuristicValue = tempHeuristic
+                    nextState = copy.deepcopy(child)
+
+            i += 1
+
+        if(nextState in visited) and going:
+            print("Couldn't find solution")
+            return
+
+        elif going:
+            visited.append(nextState)
+            self.greedy(visited, nextState, heuristic)
+            return
+
+        endAlgTime = time.time()
+
+        for sol in visited:
+            self.printBoard(sol)
+            print()
+
+        self.showAlgInformation(len(visited) - 1, self.nodesChecked, round(endAlgTime-startAlgTime, 3))
 
 
     # Number of pieces out of order
@@ -150,7 +224,7 @@ class Game:
 
         return distance
 
-
+    # Finds in the solution board the given value, and returns its coordinates
     def findInSolution(self, value):
 
         for i in range(0, self.size):
@@ -158,7 +232,7 @@ class Game:
                 if self.solution[i][k] == value:
                     return [i, k]
 
-
+    # Returns an array with all the boards that are children of the given board
     def checkAllBoardChilds(self, board):
 
         boardChilds = []
@@ -182,6 +256,7 @@ class Game:
 
         return boardChilds
 
+    # Utility function that prints the given board in a user friendly way
     def printBoard(self, board):
         for row in board:
             self.printRow(row)
@@ -194,6 +269,7 @@ class Game:
                 print(" " + str(col) + "  ", end='')
         print("]")
 
+    # Creates the board as an array of arrays of ints
     def createBoard(self, board):
         newBoard = []
         for row in board:
@@ -202,6 +278,8 @@ class Game:
                 newRow.append(int(col))
             newBoard.append(newRow)
         return newBoard
+    
+    # Creates the solution of the puzzle, taking into account only the size of the board
     def createSolution(self):
 
         newSolution = []
@@ -216,6 +294,7 @@ class Game:
             newSolution.append(newRow)
         return newSolution
 
+    # Checks if the 0 (zero) is able to move in the request direction in the given board
     def ableToMove(self, board, direction):
 
         zeroCoords = self.getZeroCoords(board)
@@ -226,7 +305,6 @@ class Game:
             return False
         else:
             return True
-
 
     # Move predicates
     def move(self, board, direction):
@@ -264,6 +342,7 @@ class Game:
         board[zeroRow][zeroCol + 1] = 0
         board[zeroRow][zeroCol] = oldValue
 
+    # Returns the coordinates of the 0 (zero)
     def getZeroCoords(self, board):
 
         zeroCol = -1
@@ -281,12 +360,15 @@ class Game:
                     k += 1
             i += 1
 
+    # Checks if the board is solution
     def checkWin(self, board):
         if self.solution == board:
             return True
         else:
             return False
 
+    # Prints information about how many moves, how many nodes were visited 
+    # and how much time the algorithm spent searching for the solution
     def showAlgInformation(self, nMoves, nVisitedNodes, timeElapsed):
         
         print("Number of moves: ", end="")
@@ -298,5 +380,63 @@ class Game:
         print("Time elapsed: ", end="")
         print(timeElapsed, end=" seg.\n")
 
+    # Allows the user to choose the algorithm to apply
+    def chooseLevel(self):
 
-p1 = Game(levels.probl4)
+        print("\nPlease, choose which level you wish to be solved:")
+        print("A) probl1.")
+        print("B) probl2.")
+        print("C) probl3.")
+        print("D) probl4.")
+
+        ans=input()
+
+        if ans == "A" or ans == "a":
+            return levels.probl1
+        elif ans == "B" or ans == "b":
+            return levels.probl2
+        elif ans == "C" or ans == "c":
+            return levels.probl3
+        elif ans == "D" or ans == "d":
+            return levels.probl4
+        else:
+            self.chooseLevel()
+
+
+    # Allows the user to choose the algorithm to apply
+    def chooseAlg(self):
+
+        print("\nPlease, choose which search method you wish to use:")
+        print("A) Breadth-first search.")
+        print("B) Greedy.")
+        print("C) A*.")
+
+        ans=input()
+
+        if ans == "A" or ans == "a":
+            return 1
+        elif ans == "B" or ans == "b":
+            return 2
+        elif ans == "C" or ans == "c":
+            return 3
+        else:
+            self.chooseAlg()
+
+    # Allows the user to choose the heuristic to apply
+    def chooseHeuristic(self):
+        
+        print("\nPlease, choose which heuristic you wish to apply: ")
+        print("A) Number of pieces out of order.")
+        print("B) Sum of the Manhattan distances of the out of order pieces to their right order.")
+
+        ans=input()
+
+        if ans == "A" or ans == "a":
+            return 1
+        elif ans == "B" or ans == "b":
+            return 2
+        else:
+            self.chooseHeuristic()
+
+
+p1 = Game()
