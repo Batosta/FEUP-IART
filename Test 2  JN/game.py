@@ -25,7 +25,7 @@ class Game:
 
         elif algorithm == 3:
             n = self.chooseHeuristic()
-            self.aStar([], self.board, n)
+            self.aStar(self.board, n)
 
 
     # Breadth First Search (bfs) algorithm
@@ -191,6 +191,9 @@ class Game:
 
         endAlgTime = time.time()
 
+        visited.reverse()
+        visited.append(self.board)
+        visited.reverse()
         for sol in visited:
             self.printBoard(sol)
             print()
