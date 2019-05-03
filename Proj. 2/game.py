@@ -1,3 +1,4 @@
+import utilities
 from intersection import Intersection
 
 class Board:
@@ -18,57 +19,10 @@ class Board:
         # 6----5----4 
 
         self.createBoard()
-        self.printMap()
-        # self.play()
+        utilities.printMap(self.intersections)
+        self.play()
 
-    def printMap(self):
-        print(self.intersections[0].getValue(), end='-------')
-        print(self.intersections[1].getValue(), end='-------')
-        print(self.intersections[2].getValue())
-
-        print('|       |       |')
-
-        print('|  ', end='')
-        print(self.intersections[8].getValue(), end='----')
-        print(self.intersections[9].getValue(), end='----')
-        print(self.intersections[10].getValue(), end='  |\n')
-        
-        print('|  |    |    |  |')
-
-        print('|  |  ', end='')
-        print(self.intersections[16].getValue(), end='-')
-        print(self.intersections[17].getValue(), end='-')
-        print(self.intersections[18].getValue(), end='  |  |\n')
-        
-        print('|  |  |   |  |  |')
-
-        print(self.intersections[7].getValue(), end='--')
-        print(self.intersections[15].getValue(), end='--')
-        print(self.intersections[23].getValue(), end='   ')
-        print(self.intersections[19].getValue(), end='--')
-        print(self.intersections[11].getValue(), end='--')
-        print(self.intersections[3].getValue())
-        
-        print('|  |  |   |  |  |')
-
-        print('|  |  ', end='')
-        print(self.intersections[22].getValue(), end='-')
-        print(self.intersections[21].getValue(), end='-')
-        print(self.intersections[20].getValue(), end='  |  |\n')
-
-        print('|  |    |    |  |')
-
-        print('|  ', end='')
-        print(self.intersections[14].getValue(), end='----')
-        print(self.intersections[13].getValue(), end='----')
-        print(self.intersections[12].getValue(), end='  |\n')
-
-        print('|       |       |')
-
-        print(self.intersections[6].getValue(), end='-------')
-        print(self.intersections[5].getValue(), end='-------')
-        print(self.intersections[4].getValue())
-
+    
     def play(self):
         while True:
             if self.player1PiecesOffBoard == 0 and self.player2PiecesOffBoard == 0:
@@ -102,7 +56,6 @@ class Board:
 
     def check3row(self, inter):
         return self.checkHorizontal(inter) or self.checkVertical(inter)
-
     def checkHorizontal(self, intersection):
         p = intersection.getPos()
         r = intersection.getRing()
@@ -119,7 +72,6 @@ class Board:
                     return False
             return True
         return False
-
     def checkVertical(self, intersection):
         p = intersection.getPos()
         r = intersection.getRing()
@@ -144,22 +96,22 @@ class Board:
     def insertPiece(self, piece, pos, ring):
         intersection = self.selecti(pos,ring)
         intersection.set(piece)
-        self.printMap()
+        utilities.printMap(self.intersections)
         if self.check3row(intersection):
             self.remove()
-            self.printMap()
+            utilities.printMap(self.intersections)
         self.changePlayer()
 
     def remove(self):
         while True:
-            pos = self.inputNumber()
-            ring = self.inputRing()
+            pos = utilities.inputNumber()
+            ring = utilities.inputRing()
             i = self.selecti(pos,ring)
             if i.getValue() == self.player or i.getValue() == 0:
                 print("Choose a piece from your adversary to remove.")
             else:
                 i.set(0)
-                self.printMap()       
+                utilities.printMap(self.intersections)       
                 break
 
     def resetBoard(self):
@@ -172,28 +124,6 @@ class Board:
         else:
             self.player = 1
 
-    def inputRing(self):
-        while True:
-            ring = input("Select position (outer/middle/inner):  ")
-
-            if ring in ['outer','middle','inner']:
-                return ring
-            else:
-                print("Insert a valid ring (outer/middle/inner)\n")
-
-    def inputNumber(self):
-        while True:
-            pos = input("Select position (0-7):  ")
-            try:
-                number = int(pos)
-            except :
-                print("Type a number (0-7)\n")
-                continue
-            if number >= 0 and number <=7:
-                return number
-            else:
-                print("Insert a valid number (0-7)\n")
-            
     def countPieces(self, player):
         c = 0
         for intersection in self.intersections:
@@ -225,7 +155,7 @@ class Board:
         intersection = self.chooseIntersection()            
         intersection.set(self.player)
         self.takePiece()
-        self.printMap()
+        utilities.printMap(self.intersections)
         if self.check3row(intersection):
             self.remove()
         self.changePlayer()
@@ -268,8 +198,8 @@ class Board:
 
     def choosePiece(self):
         while True:
-            pos = self.inputNumber()
-            ring = self.inputRing()
+            pos = utilities.inputNumber()
+            ring = utilities.inputRing()
             selected = self.selecti(pos, ring)
             if selected.getValue() == self.player:
                 return selected
@@ -277,8 +207,8 @@ class Board:
 
     def chooseIntersection(self):
         while True:
-            pos = self.inputNumber()
-            ring = self.inputRing()
+            pos = utilities.inputNumber()
+            ring = utilities.inputRing()
             selected = self.selecti(pos, ring)
             if selected.getValue() == 0:
                 return selected
