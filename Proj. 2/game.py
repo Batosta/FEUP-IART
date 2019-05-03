@@ -17,38 +17,9 @@ class Board:
         # |         |
         # 6----5----4 
 
-        #outer rint
-        self.intersections.append(Intersection(0, "outer", [[1,"outer"],[7,"outer"]]))
-        self.intersections.append(Intersection(1, "outer", [[0,"outer"],[2,"outer"],[1,"middle"]]))
-        self.intersections.append(Intersection(2, "outer", [[1,"outer"],[3,"outer"]]))
-        self.intersections.append(Intersection(3, "outer", [[2,"outer"],[4,"outer"],[3,"middle"]]))
-        self.intersections.append(Intersection(4, "outer", [[3,"outer"],[5,"outer"]]))
-        self.intersections.append(Intersection(5, "outer", [[4,"outer"],[6,"outer"],[5,"middle"]]))
-        self.intersections.append(Intersection(6, "outer", [[5,"outer"],[7,"outer"]]))
-        self.intersections.append(Intersection(7, "outer", [[0,"outer"],[6,"outer"],[7,"middle"]]))
-
-        #middle ring
-        self.intersections.append(Intersection(0, "middle", [[1,"middle"],[7,"middle"]]))
-        self.intersections.append(Intersection(1, "middle", [[0,"middle"],[2,"middle"],[1,"outer"],[1,"inner"]]))
-        self.intersections.append(Intersection(2, "middle", [[1,"middle"],[3,"middle"]]))
-        self.intersections.append(Intersection(3, "middle", [[2,"middle"],[4,"middle"],[3,"outer"],[3,"inner"]]))
-        self.intersections.append(Intersection(4, "middle", [[3,"middle"],[5,"middle"]]))
-        self.intersections.append(Intersection(5, "middle", [[4,"middle"],[6,"middle"],[5,"outer"],[5,"inner"]]))
-        self.intersections.append(Intersection(6, "middle", [[5,"middle"],[7,"middle"]]))
-        self.intersections.append(Intersection(7, "middle", [[0,"middle"],[6,"middle"],[7,"outer"],[7,"inner"]]))
-
-        #inner ring
-        self.intersections.append(Intersection(0, "inner", [[1,"inner"],[7,"inner"]]))
-        self.intersections.append(Intersection(1, "inner", [[0,"inner"],[2,"inner"],[1,"middle"]]))
-        self.intersections.append(Intersection(2, "inner", [[1,"inner"],[3,"inner"]]))
-        self.intersections.append(Intersection(3, "inner", [[2,"inner"],[4,"inner"],[3,"middle"]]))
-        self.intersections.append(Intersection(4, "inner", [[3,"inner"],[5,"inner"]]))
-        self.intersections.append(Intersection(5, "inner", [[4,"inner"],[6,"inner"],[5,"middle"]]))
-        self.intersections.append(Intersection(6, "inner", [[5,"inner"],[7,"inner"]]))
-        self.intersections.append(Intersection(7, "inner", [[0,"inner"],[6,"inner"],[7,"middle"]]))
-
+        self.createBoard()
         self.printMap()
-        self.play()
+        # self.play()
 
     def printMap(self):
         print(self.intersections[0].getValue(), end='-------')
@@ -98,7 +69,37 @@ class Board:
         print(self.intersections[5].getValue(), end='-------')
         print(self.intersections[4].getValue())
 
-        
+    def play(self):
+        while True:
+            if self.player1PiecesOffBoard == 0 and self.player2PiecesOffBoard == 0:
+                self.move()
+            else:
+                self.place()
+
+    def createBoard(self):
+        self.createRing("outer")
+        self.createMiddleRing()
+        self.createRing("inner")
+    def createRing(self, ring):
+        self.intersections.append(Intersection(0, ring, [[1,ring],[7,ring]]))
+        self.intersections.append(Intersection(1, ring, [[0,ring],[2,ring],[1,"middle"]]))
+        self.intersections.append(Intersection(2, ring, [[1,ring],[3,ring]]))
+        self.intersections.append(Intersection(3, ring, [[2,ring],[4,ring],[3,"middle"]]))
+        self.intersections.append(Intersection(4, ring, [[3,ring],[5,ring]]))
+        self.intersections.append(Intersection(5, ring, [[4,ring],[6,ring],[5,"middle"]]))
+        self.intersections.append(Intersection(6, ring, [[5,ring],[7,ring]]))
+        self.intersections.append(Intersection(7, ring, [[0,ring],[6,ring],[7,"middle"]]))
+    def createMiddleRing(self):
+        self.intersections.append(Intersection(0, "middle", [[1,"middle"],[7,"middle"]]))
+        self.intersections.append(Intersection(1, "middle", [[0,"middle"],[2,"middle"],[1,"outer"],[1,"inner"]]))
+        self.intersections.append(Intersection(2, "middle", [[1,"middle"],[3,"middle"]]))
+        self.intersections.append(Intersection(3, "middle", [[2,"middle"],[4,"middle"],[3,"outer"],[3,"inner"]]))
+        self.intersections.append(Intersection(4, "middle", [[3,"middle"],[5,"middle"]]))
+        self.intersections.append(Intersection(5, "middle", [[4,"middle"],[6,"middle"],[5,"outer"],[5,"inner"]]))
+        self.intersections.append(Intersection(6, "middle", [[5,"middle"],[7,"middle"]]))
+        self.intersections.append(Intersection(7, "middle", [[0,"middle"],[6,"middle"],[7,"outer"],[7,"inner"]]))
+
+
     def check3row(self, inter):
         return self.checkHorizontal(inter) or self.checkVertical(inter)
 
@@ -264,13 +265,6 @@ class Board:
                     if self.selecti(connection[0], connection[1]).getValue() == 0:
                         moves.append(connection) 
         return moves
-
-    def play(self):
-        while True:
-            if self.player1PiecesOffBoard == 0 and self.player2PiecesOffBoard == 0:
-                self.move()
-            else:
-                self.place()
 
     def choosePiece(self):
         while True:
