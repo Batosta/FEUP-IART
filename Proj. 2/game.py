@@ -104,11 +104,12 @@ class Board:
 
     def remove(self):
         while True:
+            print("Choose a piece from your adversary to remove.")
             pos = utilities.inputNumber()
             ring = utilities.inputRing()
             i = self.selecti(pos,ring)
             if i.getValue() == self.player or i.getValue() == 0:
-                print("Choose a piece from your adversary to remove.")
+                continue
             else:
                 i.set(0)
                 utilities.printMap(self.intersections)       
@@ -129,12 +130,9 @@ class Board:
         for intersection in self.intersections:
             if intersection.getValue() == player:
                 c += 1
+        return c
     
     def canmove(self, intersection, intersection2):
-        print(intersection.getValue())
-        print(intersection2.getValue())
-        print([intersection2.getPos(), intersection2.getRing()])
-        print(intersection.getConnections())
         return intersection.getValue() != 0 and intersection2.getValue() == 0 and ([intersection2.getPos(), intersection2.getRing()] in intersection.getConnections())
 
     def move(self):
@@ -168,13 +166,13 @@ class Board:
 
     def getNextPlayer(self):
         if self.player == 1:
-            return 1
-        else:
             return 2
+        else:
+            return 1
 
     def checkWin(self):
         nextPlayer = self.getNextPlayer()
-        if self.playerHasNoMoves(nextPlayer) or self.countPieces(nextPlayer) <= 2:
+        if self.playerHasNoMoves(nextPlayer) or (self.countPieces(nextPlayer) <= 2):
             print('Player ', end='')
             print(self.player, end=' wins!\n')
             exit()
@@ -195,6 +193,13 @@ class Board:
                     if self.selecti(connection[0], connection[1]).getValue() == 0:
                         moves.append(connection) 
         return moves
+
+    def playerPlacements(self, player):
+        placements = []
+        for intersection in self.intersections:
+            if (intersection.getValue() == 0):
+                placements.append([intersection.getPos(), intersection.getRing()])
+        return placements
 
     def choosePiece(self):
         while True:
