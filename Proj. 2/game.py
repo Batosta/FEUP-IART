@@ -219,4 +219,62 @@ class Board:
                 return selected
             print("Choose an empty intersection!\n")
 
+"""
+def minimax(game, depth, alpha, beta, maximizingPlayer, agent):
+
+    if (depth == 0 or game.winning_move(1) or game.winning_move(2)) and agent == 1:
+        return None, None, Agente1(game)
+
+    if (depth == 0 or game.winning_move(1) or game.winning_move(2)) and agent == 2:
+        return None, None, Agente2(game)
+
+    if (depth == 0 or game.winning_move(1) or game.winning_move(2)) and agent == 3:
+        return None, None, Agente3(game)
+
+    if (depth == 0 or game.winning_move(1) or game.winning_move(2)) and agent == 4:
+        return None, None, Agente4(game)
+        
+    valid_locations = game.get_valid_locations()
+    
+    if maximizingPlayer:
+        value = -math.inf
+        children = game.children(1)
+
+        column = random.choice(valid_locations)
+        row = game.is_valid_position(column)
+
+        for child in children:
+
+            new_score = minimax(child[0], depth - 1, alpha, beta, False, agent)
+
+            if new_score[2] > value:
+                value = new_score[2]
+                column = child[2]
+                row = child[1]
+
+            alpha = max(alpha, value)
+            if beta <= alpha:
+                break
+        return column, row, value
+
+    else:
+        value = math.inf
+        children = game.children(2)
+
+        column = random.choice(valid_locations)
+        row = game.is_valid_position(column)
+
+        for child in children:
+            new_score = minimax(child[0], depth - 1, alpha, beta, True, agent)
+            if new_score[2] < value:
+                value = new_score[2]
+                column = child[2]
+                row = child[1]
+            beta = min(beta, value)
+            if beta <= alpha:
+                break
+        return column, row, value
+
+"""
+
 game = Board()
