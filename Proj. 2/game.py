@@ -19,8 +19,8 @@ class Board:
         # 6----5----4 
 
         self.createBoard()
-        utilities.printMap(self.intersections)
-        self.play()
+        # utilities.printMap(self.intersections)
+        # self.play()
 
     
     def play(self):
@@ -277,4 +277,4 @@ def minimax(game, depth, alpha, beta, maximizingPlayer, agent):
 
 """
 
-game = Board()
+# game = Board()

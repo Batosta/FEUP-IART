@@ -68,3 +68,18 @@ def printMap(intersections):
         print(intersections[6].getValue(), end='-------')
         print(intersections[5].getValue(), end='-------')
         print(intersections[4].getValue())
+
+
+def chooseGameMode():
+
+    print("\nPlease, choose the game mode:\n1-Human vs Human\n2-Human vs AI\n3-AI vs AI")
+    opt=input()
+    
+    if opt == "1": 
+        return 0
+    elif opt == "2":
+        return 1
+    elif opt == "3":
+        return 2
+    else:
+        chooseGameMode()
