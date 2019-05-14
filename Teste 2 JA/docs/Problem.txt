@@ -1,0 +1,16 @@
+
+Alínea a):
+
+Representação do estado:
+
+    O jogo irá ser representado por uma matriz de tamanho 6x7. Nesta matriz as casas vazias irão ser representadas pelo número 0. Enquanto que as peças dos jogadores vão ser representadas pelos números 1 e 2.
+    O estado inicial do jogo irá ser sempre o mesmo. Uma matriz de tamanho 6x7 com todas as casas preenchidas pelo valor 0.
+
+Operadores:
+
+    Existem sete opções possíveis: primeira coluna .. sétima coluna. Cada uma destas ações ocorre numa peça. Para que a ação possa ser realizada a coluna não pode estar preenchida com seis peças.
+
+Teste objetivo:
+
+    O teste objetivo irá verificar se o estado atual do jogo é um estado final, sendo que este é um estado no qual existem quatro peças de um jogador em linha.
+    
