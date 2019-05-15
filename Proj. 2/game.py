@@ -1,9 +1,7 @@
 import utilities
 from intersection import Intersection
 
-class Game:
-
-    position = {'outer' : 0, 'middle' : 8, 'inner' : 16}
+class Board:
 
     def __init__(self):
         self.player = 1
@@ -31,31 +29,32 @@ class Game:
                 self.place()
 
     def createBoard(self):
-        self.createRing("outer")
+        self.createRing(0)
         self.createMiddleRing()
-        self.createRing("inner")
+        self.createRing(2)
     def createRing(self, ring):
         self.intersections.append(Intersection(0, ring, [[1,ring],[7,ring]]))
-        self.intersections.append(Intersection(1, ring, [[0,ring],[2,ring],[1,"middle"]]))
+        self.intersections.append(Intersection(1, ring, [[0,ring],[2,ring],[1,1]]))
         self.intersections.append(Intersection(2, ring, [[1,ring],[3,ring]]))
-        self.intersections.append(Intersection(3, ring, [[2,ring],[4,ring],[3,"middle"]]))
+        self.intersections.append(Intersection(3, ring, [[2,ring],[4,ring],[3,1]]))
         self.intersections.append(Intersection(4, ring, [[3,ring],[5,ring]]))
-        self.intersections.append(Intersection(5, ring, [[4,ring],[6,ring],[5,"middle"]]))
+        self.intersections.append(Intersection(5, ring, [[4,ring],[6,ring],[5,1]]))
         self.intersections.append(Intersection(6, ring, [[5,ring],[7,ring]]))
-        self.intersections.append(Intersection(7, ring, [[0,ring],[6,ring],[7,"middle"]]))
+        self.intersections.append(Intersection(7, ring, [[0,ring],[6,ring],[7,1]]))
     def createMiddleRing(self):
-        self.intersections.append(Intersection(0, "middle", [[1,"middle"],[7,"middle"]]))
-        self.intersections.append(Intersection(1, "middle", [[0,"middle"],[2,"middle"],[1,"outer"],[1,"inner"]]))
-        self.intersections.append(Intersection(2, "middle", [[1,"middle"],[3,"middle"]]))
-        self.intersections.append(Intersection(3, "middle", [[2,"middle"],[4,"middle"],[3,"outer"],[3,"inner"]]))
-        self.intersections.append(Intersection(4, "middle", [[3,"middle"],[5,"middle"]]))
-        self.intersections.append(Intersection(5, "middle", [[4,"middle"],[6,"middle"],[5,"outer"],[5,"inner"]]))
-        self.intersections.append(Intersection(6, "middle", [[5,"middle"],[7,"middle"]]))
-        self.intersections.append(Intersection(7, "middle", [[0,"middle"],[6,"middle"],[7,"outer"],[7,"inner"]]))
+        self.intersections.append(Intersection(0, 1, [[1,1],[7,1]]))
+        self.intersections.append(Intersection(1, 1, [[0,1],[2,1],[1,0],[1,2]]))
+        self.intersections.append(Intersection(2, 1, [[1,1],[3,1]]))
+        self.intersections.append(Intersection(3, 1, [[2,1],[4,1],[3,0],[3,2]]))
+        self.intersections.append(Intersection(4, 1, [[3,1],[5,1]]))
+        self.intersections.append(Intersection(5, 1, [[4,1],[6,1],[5,0],[5,2]]))
+        self.intersections.append(Intersection(6, 1, [[5,1],[7,1]]))
+        self.intersections.append(Intersection(7, 1, [[0,1],[6,1],[7,0],[7,2]]))
 
 
     def check3row(self, inter):
         return self.checkHorizontal(inter) or self.checkVertical(inter)
+
     def checkHorizontal(self, intersection):
         p = intersection.getPos()
         r = intersection.getRing()
@@ -65,13 +64,14 @@ class Game:
                     return False
             return True
         elif p in [3,7]:
-            return self.selecti(p, 'inner') == self.selecti(p, 'middle') and self.selecti(p, 'middle') == self.selecti(p, 'outer')
+            return self.selecti(p, 2) == self.selecti(p, 1) and self.selecti(p, 1) == self.selecti(p, 0)
         elif p in [4,5,6]:
             for pos in [4,5,6]:
                 if self.selecti(pos,r) != intersection:
                     return False
             return True
         return False
+
     def checkVertical(self, intersection):
         p = intersection.getPos()
         r = intersection.getRing()
@@ -81,7 +81,7 @@ class Game:
                     return False
             return True
         elif p in [1,5]:
-            return self.selecti(p, 'inner') == self.selecti(p, 'middle') and self.selecti(p, 'middle') == self.selecti(p, 'outer')
+            return self.selecti(p, 2) == self.selecti(p, 1) and self.selecti(p, 1) == self.selecti(p, 0)
         elif p in [2,3,4]:
             for pos in [2,3,4]:
                 if self.selecti(pos,r) != intersection:
@@ -90,7 +90,7 @@ class Game:
         return False
 
     def selecti(self, pos, ring):
-        i = self.position[ring] + pos
+        i = pos + ring * 8
         return self.intersections[i]
 
     def insertPiece(self, piece, pos, ring):
@@ -132,31 +132,33 @@ class Game:
                 c += 1
         return c
     
-    def canmove(self, intersection, intersection2):
-        return intersection.getValue() != 0 and intersection2.getValue() == 0 and ([intersection2.getPos(), intersection2.getRing()] in intersection.getConnections())
+    def canmove(self, pos, ring):
+        return [pos, ring] in self.playerMoves(self.player)
 
-    def move(self):
-        while True:
-            intersection = self.choosePiece()
-            intersection2 = self.chooseIntersection()
-            if self.canmove(intersection, intersection2):
-                intersection2.set(intersection.getValue())
-                intersection.set(0)
-                if self.check3row(intersection2):
-                    self.remove()
-                self.checkWin()
-                self.changePlayer()
-            else:
-                print("Illegal move\n")
+    def move(self, pos, ring, pos2, ring2):
+        if self.canmove(pos2, ring2):
+            intersection = self.selecti(pos, ring)
+            intersection2 = self.selecti(pos2, ring2)
+            intersection2.set(intersection.getValue())
+            intersection.set(0)
+            if self.check3row(intersection2):
+                self.remove()
+            self.checkWin()
+            self.changePlayer()
+        else:
+            print("Illegal move\n")
 
-    def place(self):
-        intersection = self.chooseIntersection()            
-        intersection.set(self.player)
-        self.takePiece()
-        utilities.printMap(self.intersections)
-        if self.check3row(intersection):
-            self.remove()
-        self.changePlayer()
+    def place(self, pos, ring):
+        intersection = self.selecti(pos, ring)
+        if intersection.getValue() == 0:
+            intersection.set(self.player)
+            self.takePiece()
+            utilities.printMap(self.intersections)
+            if self.check3row(intersection):
+                self.remove()
+            self.changePlayer()
+        else:
+            print("Choose an empty intersection")
 
     def takePiece(self):
         if self.player == 1:
@@ -193,13 +195,6 @@ class Game:
                     if self.selecti(connection[0], connection[1]).getValue() == 0:
                         moves.append(connection) 
         return moves
-
-    def playerPlacements(self, player):
-        placements = []
-        for intersection in self.intersections:
-            if (intersection.getValue() == 0):
-                placements.append([intersection.getPos(), intersection.getRing()])
-        return placements
 
     def choosePiece(self):
         while True:
@@ -276,3 +271,5 @@ def minimax(game, depth, alpha, beta, maximizingPlayer, agent):
         return column, row, value
 
 """
+
+# game = Board()
