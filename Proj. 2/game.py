@@ -1,7 +1,7 @@
 import utilities
 from intersection import Intersection
 
-class Board:
+class Game:
 
     position = {'outer' : 0, 'middle' : 8, 'inner' : 16}
 
@@ -276,5 +276,3 @@ def minimax(game, depth, alpha, beta, maximizingPlayer, agent):
         return column, row, value
 
 """
-
-# game = Board()

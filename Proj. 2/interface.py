@@ -1,6 +1,6 @@
 # # import the pygame module, so you can use it
 import pygame, time, game, utilities, os, sys
-from game import Board
+from game import Game
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 block = None
@@ -12,11 +12,12 @@ def main():
 
     option = utilities.chooseGameMode()
 
-    game = Board()
+    game = Game()
 
     circlePositions = []
 
-    BACKGROUND = (0, 0, 0)
+    BLACK = (0, 0, 0)
+    GREY = (200, 200, 200)
     RED = (255,0,0)
     BLUE = (0, 0, 255)
     WHITE = (255,255,255)
@@ -25,7 +26,7 @@ def main():
     pygame.init()
 
     SQUARESIZE = 100
-    width = 600
+    width = 800
     height = 600
     size = (width, height)
      # load and set the logo
@@ -36,39 +37,50 @@ def main():
     # TileSize = 120
 
     def draw_game():
-        screen.fill(BACKGROUND)
+        screen.fill(GREY)
         draw_lines()
         draw_circles()
-
+        writeGameInfo()
 
     def draw_lines():
         for i in range(3):
             for k in range(4):
                 a = 50 + (75*i)
                 b = 550 - (75*i)
-                pygame.draw.line(screen, WHITE, (a, a), (a, b))
-                pygame.draw.line(screen, WHITE, (a, a), (b, a))
-                pygame.draw.line(screen, WHITE, (b, a), (b, b))
-                pygame.draw.line(screen, WHITE, (a, b), (b, b))
+                pygame.draw.line(screen, BLACK, (a, a), (a, b))
+                pygame.draw.line(screen, BLACK, (a, a), (b, a))
+                pygame.draw.line(screen, BLACK, (b, a), (b, b))
+                pygame.draw.line(screen, BLACK, (a, b), (b, b))
 
-        pygame.draw.line(screen, WHITE, (300, 50), (300, 200))
-        pygame.draw.line(screen, WHITE, (50, 300), (200, 300))
-        pygame.draw.line(screen, WHITE, (300, 550), (300, 400))
-        pygame.draw.line(screen, WHITE, (550, 300), (400, 300))
+        pygame.draw.line(screen, BLACK, (300, 50), (300, 200))
+        pygame.draw.line(screen, BLACK, (50, 300), (200, 300))
+        pygame.draw.line(screen, BLACK, (300, 550), (300, 400))
+        pygame.draw.line(screen, BLACK, (550, 300), (400, 300))
 
     def draw_circles():
         for i in range(3):
             a = 50 + (75*i)
             b = 550 - (75*i)
-            pygame.draw.circle(screen, WHITE, (a, a), 5)
-            pygame.draw.circle(screen, WHITE, (300, a), 5)
-            pygame.draw.circle(screen, WHITE, (b, a), 5)
-            pygame.draw.circle(screen, WHITE, (a, b), 5)
-            pygame.draw.circle(screen, WHITE, (300, b), 5)
-            pygame.draw.circle(screen, WHITE, (b, b), 5)
-            pygame.draw.circle(screen, WHITE, (a, 300), 5)
-            pygame.draw.circle(screen, WHITE, (a, b), 5)
-            pygame.draw.circle(screen, WHITE, (b, 300), 5)
+            pygame.draw.circle(screen, BLACK, (a, a), 5)
+            pygame.draw.circle(screen, BLACK, (300, a), 5)
+            pygame.draw.circle(screen, BLACK, (b, a), 5)
+            pygame.draw.circle(screen, BLACK, (a, b), 5)
+            pygame.draw.circle(screen, BLACK, (300, b), 5)
+            pygame.draw.circle(screen, BLACK, (b, b), 5)
+            pygame.draw.circle(screen, BLACK, (a, 300), 5)
+            pygame.draw.circle(screen, BLACK, (a, b), 5)
+            pygame.draw.circle(screen, BLACK, (b, 300), 5)
+
+    def writeGameInfo():
+        writeText("Black Pieces: ", BLACK, 600, 100)
+        writeText("9", BLACK, 750, 100)
+        writeText("White Pieces:", BLACK, 600, 150)
+        writeText("9", BLACK, 750, 150)
+
+    def writeText(message, color, px, py):
+        myfont = pygame.font.SysFont("Comic Sans MS", 30)
+        label = myfont.render(message, 1, color)
+        screen.blit(label, (px, py))
 
     def create_circle_coords():
         for i in range(3):
@@ -77,6 +89,16 @@ def main():
             newRing = [(a,a), (300,a), (b,a), (b,300), (b,b), (300,b), (a,b), (a,300)]
             circlePositions.append(newRing)
 
+    def get_circle_index(mx, my):
+        r = 0
+        for ring in circlePositions:
+            c = 0
+            for order in ring:
+                if mx >= (order[0] - 25) and mx <= (order[0] + 25) and my >= (order[1] - 25) and my <= (order[1] + 25):
+                    return (c, r)
+                c+=1
+            r+=1
+        return (-1, -1)
 
 #     def updateAlg(n):
 #         pygame.board = game.updateAlg(n)
@@ -84,16 +106,6 @@ def main():
 #     def updatePlayer(block, opt):
 #         pygame.board = game.updatePlayer(block, opt)
 
-    def get_circle_index(mx, my):
-        r = 0
-        for ring in circlePositions:
-            c = 0
-            for order in ring:
-                if mx >= (order[0] - 25) and mx <= (order[0] + 25) and my >= (order[1] - 25) and my <= (order[1] + 25):
-                    return (r, c)
-                c+=1
-            r+=1
-        return (-1, -1)
 
     running = True
     if(option == 0):
