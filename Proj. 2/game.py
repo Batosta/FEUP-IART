@@ -1,7 +1,7 @@
 import utilities
 from intersection import Intersection
 
-class Board:
+class Game:
 
     def __init__(self):
         self.player = 1
@@ -272,4 +272,3 @@ def minimax(game, depth, alpha, beta, maximizingPlayer, agent):
 
 """
 
-# game = Board()
