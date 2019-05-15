@@ -57,25 +57,34 @@ def main():
         pygame.draw.line(screen, BLACK, (300, 550), (300, 400))
         pygame.draw.line(screen, BLACK, (550, 300), (400, 300))
 
+    def draw_circle(a, b):
+        index, ring = get_circle_index(a, b)
+        if game.selecti(index, ring).getValue() == 0:
+            pygame.draw.circle(screen, BLACK, (a, b), 5)
+        elif game.selecti(index, ring).getValue() == 1:
+            pygame.draw.circle(screen, BLACK, (a, b), 20)
+        else:
+            pygame.draw.circle(screen, WHITE, (a, b), 20)
+
     def draw_circles():
         for i in range(3):
             a = 50 + (75*i)
             b = 550 - (75*i)
-            pygame.draw.circle(screen, BLACK, (a, a), 5)
-            pygame.draw.circle(screen, BLACK, (300, a), 5)
-            pygame.draw.circle(screen, BLACK, (b, a), 5)
-            pygame.draw.circle(screen, BLACK, (a, b), 5)
-            pygame.draw.circle(screen, BLACK, (300, b), 5)
-            pygame.draw.circle(screen, BLACK, (b, b), 5)
-            pygame.draw.circle(screen, BLACK, (a, 300), 5)
-            pygame.draw.circle(screen, BLACK, (a, b), 5)
-            pygame.draw.circle(screen, BLACK, (b, 300), 5)
+            draw_circle(a, a)
+            draw_circle(300, a)
+            draw_circle(b, a)
+            draw_circle(a, b)
+            draw_circle(300, b)
+            draw_circle(b, b)
+            draw_circle(a, 300)
+            draw_circle(a, b)
+            draw_circle(b, 300)
 
     def writeGameInfo():
         writeText("Black Pieces: ", BLACK, 600, 100)
-        writeText("9", BLACK, 750, 100)
+        writeText(str(game.getPiecesOffBoard(1)), BLACK, 750, 100)
         writeText("White Pieces:", BLACK, 600, 150)
-        writeText("9", BLACK, 750, 150)
+        writeText(str(game.getPiecesOffBoard(2)), BLACK, 750, 150)
 
     def writeText(message, color, px, py):
         myfont = pygame.font.SysFont("Comic Sans MS", 30)
@@ -100,12 +109,11 @@ def main():
             r+=1
         return (-1, -1)
 
-#     def updateAlg(n):
-#         pygame.board = game.updateAlg(n)
+    def play(ring, index):
+        place(ring, index)
 
-#     def updatePlayer(block, opt):
-#         pygame.board = game.updatePlayer(block, opt)
-
+    def place(ring, index):
+        game.place(index, ring)
 
     running = True
     if(option == 0):
@@ -115,83 +123,23 @@ def main():
             tx = -1
             ty = -1
             # global block, command
-            draw_game()
-            pygame.display.update()
 
             for event in pygame.event.get():
+                
+                draw_game()
+                pygame.display.update()
+                
                 if (event.type == pygame.QUIT or event.type == pygame.K_ESCAPE):
                     running = False
                     sys.exit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mx, my = pygame.mouse.get_pos()
-                    tx, ty = get_circle_index(mx, my)
-                    print(tx, end=",")
-                    print(ty)
+                    index, ring = get_circle_index(mx, my)
+                    if index != -1:
+                        play(ring, index)
+                        
 
-                # if not tx == -1:
-                #     print("peça")
-
-        #         if event.type == pygame.KEYUP:
-
-        #             if event.key == pygame.K_UP:
-        #                 command = 1
-
-        #             elif event.key == pygame.K_DOWN:
-        #                 command = 2
-
-        #             elif event.key == pygame.K_RIGHT:
-        #                 command = 3
-
-        #             elif event.key == pygame.K_LEFT:
-        #                 command = 4
-
-        #     screen.fill(BACKGROUND)
-
-        #     updatePlayer(block, command)
-
-        #     try:
-        #         block = game.getBlock(block.pieces[0].coords)
-        #     except:
-        #         pass
-
-        #     get_tiles_coords()
-
-        #     command = 0
-
-        #     draw_game(screen)
-        #     pygame.display.update()
-
-        #     if game.checkWin(): break
-
-        # time.sleep(1)
-
-    # if option != 0:
-
-        # # define a variable to control the main loop
-        # get_tiles_coords()
-
-        # walking = 0
-        # # main loop
-        # while running:
-
-        #     # event handling, gets all event from the event queue
-        #     for event in pygame.event.get():
-        #         # only do something if the event is of type QUIT
-        #         if event.type == pygame.QUIT:
-        #             # change the value to False, to exit the main loop
-        #             running = False
-
-        #     screen.fill(BACKGROUND)
-        #     updateAlg(walking)
-        #     get_tiles_coords()
-        #     draw_game(screen)
-        #     pygame.display.update()
-        #     walking += 1
-        #     if(walking == len(game.solution)):
-        #         running = False
-        #     time.sleep(0.75)
-        # time.sleep(2)
 
 # run the main function only if this module is executed as the main script
 # (if you import this as a module then nothing is executed)

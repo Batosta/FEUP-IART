@@ -21,13 +21,6 @@ class Game:
         # self.play()
 
     
-    def play(self):
-        while True:
-            if self.player1PiecesOffBoard == 0 and self.player2PiecesOffBoard == 0:
-                self.move()
-            else:
-                self.place()
-
     def createBoard(self):
         self.createRing(0)
         self.createMiddleRing()
@@ -213,6 +206,12 @@ class Game:
             if selected.getValue() == 0:
                 return selected
             print("Choose an empty intersection!\n")
+
+    def getPiecesOffBoard(self, color):
+        if(color == 1):
+            return self.player1PiecesOffBoard
+        else:
+            return self.player2PiecesOffBoard
 
 """
 def minimax(game, depth, alpha, beta, maximizingPlayer, agent):
