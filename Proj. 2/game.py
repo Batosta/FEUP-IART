@@ -96,7 +96,7 @@ class Game:
         self.changePlayer()
 
     def remove(self, ring, index):
-            #print("Choose a piece from your adversary to remove.")
+        #print("Choose a piece from your adversary to remove.")
         self.changePlayer()
         i = self.selecti(index, ring)
         #if i.getValue() == self.player or i.getValue() == 0:
