@@ -173,6 +173,14 @@ class Game:
             print(self.player, end=' wins!\n')
             exit()
         
+    def pieceMoves(self, pos, ring):
+        intersection = self.selecti(pos, ring)
+        moves = []
+        for connection in intersection.getConnections():
+            intersectionMove = self.selecti(connection[0], connection[1])
+            if intersectionMove.getValue() == 0:
+                moves.append(intersectionMove.getCoords())
+        return moves
     
     def playerHasNoMoves(self, player):
         moves = self.playerMoves(self.player)
