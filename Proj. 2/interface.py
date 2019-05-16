@@ -110,35 +110,69 @@ def main():
         return (-1, -1)
 
     def play(ring, index):
-        place(ring, index)
+        return place(ring, index)
 
     def place(ring, index):
-        game.place(index, ring)
+        return game.place(index, ring)
+
+    def remove(ring, index):
+        game.remove(ring, index)
 
     running = True
+
+    phase_1 = 0
+    phase_2 = 0
+    phase_3 = 0
+
     if(option == 0):
         create_circle_coords()
-
+        draw_game()
+        pygame.display.update()
+        can_remove = 0
         while running:
-            tx = -1
-            ty = -1
-            # global block, command
+            while phase_1 != 18:
+                # global block, command
 
-            for event in pygame.event.get():
+                for event in pygame.event.get():
                 
-                draw_game()
-                pygame.display.update()
-                
-                if (event.type == pygame.QUIT or event.type == pygame.K_ESCAPE):
-                    running = False
-                    sys.exit()
+                    if (event.type == pygame.QUIT or event.type == pygame.K_ESCAPE):
+                        running = False
+                        sys.exit()
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    mx, my = pygame.mouse.get_pos()
-                    index, ring = get_circle_index(mx, my)
-                    if index != -1:
-                        play(ring, index)
-                        
+                    if can_remove == 0:
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            mx, my = pygame.mouse.get_pos()
+                            index, ring = get_circle_index(mx, my)
+                            if index != -1:
+                                can_remove = play(ring, index)
+                                phase_1 += 1
+                                draw_game()
+                                pygame.display.update()
+                    
+                    else:
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            mx, my = pygame.mouse.get_pos()
+                            index, ring = get_circle_index(mx, my)
+                            if index != -1:
+                                print("REMOVER PEÇA")
+                                remove(ring, index)
+                                can_remove = 0
+                                draw_game()
+                                pygame.display.update()
+
+            draw_game()
+            pygame.display.update()
+            
+
+            while phase_2 != 1:
+
+                # 1 - escolher peça válida
+                # 2 - movimentar peça
+                # 3 - verificar se fez um mills para retirar uma peça ao aversário
+                # 4 - alternar jogador
+                # 5 - verificar se um dos jogadores fica apenas com 3 peças, se sim, iniciar phase 3 
+
+            #while phase_3 != 
 
 
 # run the main function only if this module is executed as the main script

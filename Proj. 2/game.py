@@ -95,18 +95,16 @@ class Game:
             utilities.printMap(self.intersections)
         self.changePlayer()
 
-    def remove(self):
-        while True:
-            print("Choose a piece from your adversary to remove.")
-            pos = utilities.inputNumber()
-            ring = utilities.inputRing()
-            i = self.selecti(pos,ring)
-            if i.getValue() == self.player or i.getValue() == 0:
-                continue
-            else:
-                i.set(0)
-                utilities.printMap(self.intersections)       
-                break
+    def remove(self, ring, index):
+            #print("Choose a piece from your adversary to remove.")
+        self.changePlayer()
+        i = self.selecti(index, ring)
+        #if i.getValue() == self.player or i.getValue() == 0:
+        #    print("Choose a valid piece")
+        #    self.remove(ring, index)
+        #else:
+        i.set(0)
+        utilities.printMap(self.intersections)       
 
     def resetBoard(self):
         for intersection in self.intersections:
@@ -148,10 +146,13 @@ class Game:
             self.takePiece()
             utilities.printMap(self.intersections)
             if self.check3row(intersection):
-                self.remove()
+                #self.remove()
+                return 1
             self.changePlayer()
+            return 0
         else:
             print("Choose an empty intersection")
+            return 0
 
     def takePiece(self):
         if self.player == 1:
