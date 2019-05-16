@@ -239,45 +239,22 @@ class Game:
     No caso de phase 2 ou 3 retorna as peças que podem ser jogadas
     """
     def get_valid_locations(self, phase):
-
         positions = []
-
         #Colocar peças
-        if phase == 1:
+        if phase == 1 or phase == 3:
             for position in self.intersections:
                 if position.value == 0:
                     positions.append((position.pos, position.ring))
             return positions
-        
         #Mover peças
         if phase == 2:
-            for position in self.intersections:
-                if position.value == self.player:
-                    positions.append((position.pos, position.ring))
-            return positions
-
-        #Mover peças livremente
-        if phase == 3:
-            for position in self.intersections:
-                if position.value == self.player:
-                    positions.append((position.pos, position.ring))
-            return positions
-
+            return self.playerMoves(self.player)
         #Remover peça do outro jogador
         if phase == 4:
             for position in self.intersections:
-                if position.value != self.player:
+                if position.value != self.player and position.value != 0:
                     positions.append((position.pos, position.ring))
             return positions
-
-    def get_valid_locations2(self, valid_pieces, phase):
-        positions = [] 
-        free_spaces = self.playerMoves(self.player)
-
-        #FALTA ADICIONAR PHASE 2 EM QUE TEMOS DE RETORNAR AS CASAS ONDE PEÇAS PODEM SER MOVIDAS
-
-        if phase == 3:
-            return free_spaces
 
     def minimax(self, depth, alpha, beta, maximizingPlayer, phase):
 
@@ -298,9 +275,6 @@ class Game:
             return None, None, phase4_heuristic(self)
         
         valid_locations = self.get_valid_locations(phase)
-
-        if phase == 2 or phase == 3:
-            valid_locations2 = self.get_valid_locations2(valid_locations, phase)
     
         if maximizingPlayer:
             value = -math.inf
