@@ -20,5 +20,8 @@ class Intersection:
         def getConnections(self):
             return self.connections
 
+        def getCoords(self):
+            return [self.pos, self.ring]
+
         def set(self, value):
             self.value = value

@@ -17,8 +17,6 @@ class Game:
         # 6----5----4 
 
         self.createBoard()
-        # utilities.printMap(self.intersections)
-        # self.play()
 
     
     def createBoard(self):
@@ -89,10 +87,10 @@ class Game:
     def insertPiece(self, piece, pos, ring):
         intersection = self.selecti(pos,ring)
         intersection.set(piece)
-        utilities.printMap(self.intersections)
+        # utilities.printMap(self.intersections)
         if self.check3row(intersection):
             self.remove()
-            utilities.printMap(self.intersections)
+            # utilities.printMap(self.intersections)
         self.changePlayer()
 
     def remove(self, ring, index):
@@ -104,7 +102,7 @@ class Game:
         #    self.remove(ring, index)
         #else:
         i.set(0)
-        utilities.printMap(self.intersections)       
+        # utilities.printMap(self.intersections)       
 
     def resetBoard(self):
         for intersection in self.intersections:
@@ -123,28 +121,29 @@ class Game:
                 c += 1
         return c
     
-    def canmove(self, pos, ring):
-        return [pos, ring] in self.playerMoves(self.player)
+    def canmove(self, pos, ring, pos2, ring2):
+        return [pos2, ring2] in self.playerMoves(self.player) and [pos2, ring2] in self.selecti(pos, ring).getConnections()
 
     def move(self, pos, ring, pos2, ring2):
-        if self.canmove(pos2, ring2):
+        if self.canmove(pos, ring, pos2, ring2):
             intersection = self.selecti(pos, ring)
             intersection2 = self.selecti(pos2, ring2)
             intersection2.set(intersection.getValue())
             intersection.set(0)
             if self.check3row(intersection2):
-                self.remove()
+                return 2
             self.checkWin()
             self.changePlayer()
+            return 1
         else:
-            print("Illegal move\n")
+            return 0
 
     def place(self, pos, ring):
         intersection = self.selecti(pos, ring)
         if intersection.getValue() == 0:
             intersection.set(self.player)
             self.takePiece()
-            utilities.printMap(self.intersections)
+            # utilities.printMap(self.intersections)
             if self.check3row(intersection):
                 #self.remove()
                 return 1
@@ -172,6 +171,7 @@ class Game:
             print('Player ', end='')
             print(self.player, end=' wins!\n')
             exit()
+
         
     def pieceMoves(self, pos, ring):
         intersection = self.selecti(pos, ring)
@@ -221,6 +221,7 @@ class Game:
             return self.player1PiecesOffBoard
         else:
             return self.player2PiecesOffBoard
+
 
 """
 def minimax(game, depth, alpha, beta, maximizingPlayer, agent):
