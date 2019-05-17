@@ -120,7 +120,7 @@ class Game:
         return [pos2, ring2] in self.playerMoves(self.player) and [pos2, ring2] in self.selecti(pos, ring).getConnections()
 
     def move(self, pos, ring, pos2, ring2):
-        if self.canmove(pos, ring, pos2, ring2):
+        if self.canmove(pos, ring, pos2, ring2) or self.getNumberOfPieces(self.player) == 3:
             intersection = self.selecti(pos, ring)
             intersection2 = self.selecti(pos2, ring2)
             intersection2.set(intersection.getValue())
@@ -224,6 +224,12 @@ class Game:
             if self.selectIntersection(connection[0], connection[1], intersections).getValue() == 0:
                 return False
         return True
+    def getNumberOfPieces(self, player):
+        counter = 0
+        for intersection in self.intersections:
+            if intersection.getValue() == player:
+                counter += 1
+        return counter
 
     def possibleMills(self, intersections):
         possibelMills = 0

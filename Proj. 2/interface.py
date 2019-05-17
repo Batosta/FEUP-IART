@@ -140,7 +140,6 @@ def main():
         pygame.display.update()
         while running:
 
-
             # Placing pieces phase
             while placing_phase != 18 or can_remove == 1:
 
@@ -149,6 +148,7 @@ def main():
                     if (event.type == pygame.QUIT or event.type == pygame.K_ESCAPE):
                         self.running = False
                         sys.exit()
+                    
                     if can_remove == 1:                             # remove a piece
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             mx, my = pygame.mouse.get_pos()
@@ -175,11 +175,8 @@ def main():
                                     draw_game(2)
                                 else:
                                     draw_game(1)
-
                     pygame.display.update()
     
-
-
 
             # Moving pieces phase
             while moving_phase != 1:
@@ -189,6 +186,7 @@ def main():
                     if (event.type == pygame.QUIT or event.type == pygame.K_ESCAPE):
                         running = False
                         sys.exit()
+                    
                     if can_remove == 1:                             # remove a piece
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             mx, my = pygame.mouse.get_pos()
@@ -206,30 +204,28 @@ def main():
                             if index != -1:
                                 value = game.selecti(index, ring).getValue()
                                 if value == game.player:
-                                    if len(game.pieceMoves(index, ring)) != 0:
+                                    if game.getNumberOfPieces(game.player) == 3 or len(game.pieceMoves(index, ring)) != 0:
                                         is_moving = 1
                                         movingIndex = index
                                         movingRing = ring
-                                        print(movingIndex, end="")
-                                        print(movingRing)
+
                     else:                                           # choose where to move the piece
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             mx, my = pygame.mouse.get_pos()
                             index, ring = get_circle_index(mx, my)
                             if index != -1:
-                                    value = game.selecti(index, ring).getValue()
-                                    if value == 0:
-                                        movingResult = game.move(movingIndex, movingRing, index, ring)
-                                        if movingResult != 0:
-                                            is_moving = 0
-                                            movingIndex = -1
-                                            movingRing = -1
-                                            if movingResult == 2:
-                                                can_remove = 1
-                                                draw_game(3)
-                                            else:
-                                                draw_game(2)
-
+                                value = game.selecti(index, ring).getValue()
+                                if value == 0:
+                                    movingResult = game.move(movingIndex, movingRing, index, ring)
+                                    if movingResult != 0:
+                                        is_moving = 0
+                                        movingIndex = -1
+                                        movingRing = -1
+                                        if movingResult == 2:
+                                            can_remove = 1
+                                            draw_game(3)
+                                        else:
+                                            draw_game(2)
                     pygame.display.update()
 
 
@@ -241,14 +237,13 @@ def main():
     else:
         AiVsAi()
 '''
+    # while phase_2 != 1:
 
-            # while phase_2 != 1:
-
-                # 1 - escolher peça válida
-                # 2 - movimentar peça
-                # 3 - verificar se fez um mills para retirar uma peça ao aversário
-                # 4 - alternar jogador
-                # 5 - verificar se um dos jogadores fica apenas com 3 peças, se sim, iniciar phase 3 
+        # 1 - escolher peça válida
+        # 2 - movimentar peça
+        # 3 - verificar se fez um mills para retirar uma peça ao aversário
+        # 4 - alternar jogador
+        # 5 - verificar se um dos jogadores fica apenas com 3 peças, se sim, iniciar phase 3 
 '''
 
 
