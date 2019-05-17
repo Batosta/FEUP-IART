@@ -222,62 +222,93 @@ class Game:
         else:
             return self.player2PiecesOffBoard
 
+    def phase1_heuristic(self):
+        return 1
 
-"""
-def minimax(game, depth, alpha, beta, maximizingPlayer, agent):
+    def phase2_heuristic(self):
+        return 1
 
-    if (depth == 0 or game.winning_move(1) or game.winning_move(2)) and agent == 1:
-        return None, None, Agente1(game)
+    def phase3_heuristic(self):
+        return 1
 
-    if (depth == 0 or game.winning_move(1) or game.winning_move(2)) and agent == 2:
-        return None, None, Agente2(game)
+    def phase4_heuristic(self):
+        return 1
 
-    if (depth == 0 or game.winning_move(1) or game.winning_move(2)) and agent == 3:
-        return None, None, Agente3(game)
+    """
+    No caso de phase 1 ou 4, retorna as posições onde se podem colocar peças e que peças pode remover respetivamente
+    No caso de phase 2 ou 3 retorna as peças que podem ser jogadas
+    """
+    def get_valid_locations(self, phase):
+        positions = []
+        #Colocar peças
+        if phase == 1 or phase == 3:
+            for position in self.intersections:
+                if position.value == 0:
+                    positions.append((position.pos, position.ring))
+            return positions
+        #Mover peças
+        if phase == 2:
+            return self.playerMoves(self.player)
+        #Remover peça do outro jogador
+        if phase == 4:
+            for position in self.intersections:
+                if position.value != self.player and position.value != 0:
+                    positions.append((position.pos, position.ring))
+            return positions
 
-    if (depth == 0 or game.winning_move(1) or game.winning_move(2)) and agent == 4:
-        return None, None, Agente4(game)
+    def minimax(self, depth, alpha, beta, maximizingPlayer, phase):
+
+        #colocar peças
+        if (depth == 0 or self.checkWin() or self.checkWin()) and phase == 1:
+            return None, None, phase1_heuristic(self)
+
+        #mover peças
+        if (depth == 0 or self.checkWin() or self.checkWin()) and phase == 2:
+            return None, None, phase2_heuristic(self)
+
+        #mover peças livremente
+        if (depth == 0 or self.checkWin() or self.checkWin()) and phase == 3:
+            return None, None, phase3_heuristic(self)
+
+        #remover peça do outro jogador
+        if (depth == 0 or self.checkWin() or self.checkWin()) and phase == 4:
+            return None, None, phase4_heuristic(self)
         
-    valid_locations = game.get_valid_locations()
+        valid_locations = self.get_valid_locations(phase)
     
-    if maximizingPlayer:
-        value = -math.inf
-        children = game.children(1)
+        if maximizingPlayer:
+            value = -math.inf
+            children = self.children(phase)
 
-        column = random.choice(valid_locations)
-        row = game.is_valid_position(column)
+            index, ring = random.choice(valid_locations)
 
-        for child in children:
+            for child in children:
 
-            new_score = minimax(child[0], depth - 1, alpha, beta, False, agent)
+                new_score = minimax(child[0], depth - 1, alpha, beta, False, phase)
 
-            if new_score[2] > value:
-                value = new_score[2]
-                column = child[2]
-                row = child[1]
+                if new_score[2] > value:
+                    value = new_score[2]
+                    index = child[2]
+                    ring = child[1]
 
-            alpha = max(alpha, value)
-            if beta <= alpha:
-                break
-        return column, row, value
+                alpha = max(alpha, value)
+                if beta <= alpha:
+                    break
+            return index, ring, value
 
-    else:
-        value = math.inf
-        children = game.children(2)
+        else:
+            value = math.inf
+            children = self.children(2)
 
-        column = random.choice(valid_locations)
-        row = game.is_valid_position(column)
+            index, ring = random.choice(valid_locations)
 
-        for child in children:
-            new_score = minimax(child[0], depth - 1, alpha, beta, True, agent)
-            if new_score[2] < value:
-                value = new_score[2]
-                column = child[2]
-                row = child[1]
-            beta = min(beta, value)
-            if beta <= alpha:
-                break
-        return column, row, value
-
-"""
-
+            for child in children:
+                new_score = minimax(child[0], depth - 1, alpha, beta, True, phrase)
+                if new_score[2] < value:
+                    value = new_score[2]
+                    index = child[2]
+                    ring = child[1]
+                beta = min(beta, value)
+                if beta <= alpha:
+                    break
+            return index, ring, value
