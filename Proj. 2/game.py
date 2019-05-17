@@ -125,7 +125,7 @@ class Game:
         return [pos2, ring2] in self.playerMoves(self.player) and [pos2, ring2] in self.selecti(pos, ring).getConnections()
 
     def move(self, pos, ring, pos2, ring2):
-        if self.canmove(pos, ring, pos2, ring2) or self.getNumberOfPieces(self.player) == 3:
+        if self.canmove(pos, ring, pos2, ring2) or self.countPieces(self.player) == 3:
             intersection = self.selecti(pos, ring)
             intersection2 = self.selecti(pos2, ring2)
             intersection2.set(intersection.getValue())
@@ -221,14 +221,6 @@ class Game:
             return self.player1PiecesOffBoard
         else:
             return self.player2PiecesOffBoard
-
-    def getNumberOfPieces(self, player):
-        counter = 0
-        for intersection in self.intersections:
-            if intersection.getValue() == player:
-                counter += 1
-        return counter
-
 
     def phase1_heuristic(self):
         return 1

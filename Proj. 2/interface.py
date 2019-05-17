@@ -204,7 +204,7 @@ def main():
                             if index != -1:
                                 value = game.selecti(index, ring).getValue()
                                 if value == game.player:
-                                    if game.getNumberOfPieces(game.player) == 3 or len(game.pieceMoves(index, ring)) != 0:
+                                    if game.countPieces(game.player) == 3 or len(game.pieceMoves(index, ring)) != 0:
                                         is_moving = 1
                                         movingIndex = index
                                         movingRing = ring
@@ -236,16 +236,6 @@ def main():
         humanVsAi()
     else:
         AiVsAi()
-'''
-    # while phase_2 != 1:
-
-        # 1 - escolher peça válida
-        # 2 - movimentar peça
-        # 3 - verificar se fez um mills para retirar uma peça ao aversário
-        # 4 - alternar jogador
-        # 5 - verificar se um dos jogadores fica apenas com 3 peças, se sim, iniciar phase 3 
-'''
-
 
 # run the main function only if this module is executed as the main script
 # (if you import this as a module then nothing is executed)
