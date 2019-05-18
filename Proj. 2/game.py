@@ -353,19 +353,13 @@ class Game:
         return False
 
 
-    def phase1_heuristic(self, intersections):
+    def heuristic(self, intersections):
         value = 0
         for intersection in intersections:
             if intersection.getValue() != 0:
                 pass
 
-    def phase2_heuristic(self):
-        return 1
-
-    def phase3_heuristic(self):
-        return 1
-
-    def phase4_heuristic(self):
+    def heuristic(self, phase):
         return 1
 
     """
@@ -393,30 +387,29 @@ class Game:
     def minimax(self, depth, alpha, beta, maximizingPlayer, phase):
 
         #colocar peças
-        if (depth == 0 or self.checkWin() or self.checkWin()) and phase == 1:
-            return None, None, phase1_heuristic(self)
-
-        #mover peças
-        if (depth == 0 or self.checkWin() or self.checkWin()) and phase == 2:
-            return None, None, phase2_heuristic(self)
-
-        #mover peças livremente
-        if (depth == 0 or self.checkWin() or self.checkWin()) and phase == 3:
-            return None, None, phase3_heuristic(self)
-
-        #remover peça do outro jogador
-        if (depth == 0 or self.checkWin() or self.checkWin()) and phase == 4:
-            return None, None, phase4_heuristic(self)
+        if (depth == 0 or self.checkWin()):
+            return None, None, self.heuristic(phase)
         
         valid_locations = self.get_valid_locations(phase)
     
         if maximizingPlayer:
+
             value = -math.inf
             children = self.children(phase)
-
             index, ring = random.choice(valid_locations)
 
             for child in children:
+
+                intersection = self.selecti(index, ring)
+
+                if self.check3row(intersection):
+                    phase = 4 #remove
+                elif self.player1PiecesOffBoard == 0 and self.player2PiecesOffBoard == 0:
+                    if self.countPieces(self.player) == 3:
+                        phase = 3
+                    phase = 2
+                else:
+                    phase = 1
 
                 new_score = minimax(child[0], depth - 1, alpha, beta, False, phase)
 
@@ -426,23 +419,41 @@ class Game:
                     ring = child[1]
 
                 alpha = max(alpha, value)
+                
                 if beta <= alpha:
                     break
+
             return index, ring, value
 
         else:
-            value = math.inf
-            children = self.children(2)
 
+            value = math.inf
+            children = self.children(phase)
             index, ring = random.choice(valid_locations)
 
             for child in children:
+
+                intersection = self.selecti(index, ring)
+
+                if self.check3row(intersection):
+                    phase = 4 #remove
+                elif self.player1PiecesOffBoard == 0 and self.player2PiecesOffBoard == 0:
+                    if self.countPieces(self.player) == 3:
+                        phase = 3
+                    phase = 2
+                else:
+                    phase = 1
+
                 new_score = minimax(child[0], depth - 1, alpha, beta, True, phrase)
+
                 if new_score[2] < value:
                     value = new_score[2]
                     index = child[2]
                     ring = child[1]
+                
                 beta = min(beta, value)
+                
                 if beta <= alpha:
                     break
+            
             return index, ring, value
