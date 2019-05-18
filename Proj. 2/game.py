@@ -142,7 +142,7 @@ class Game:
             if self.check3row(intersection):
                 #self.remove()
                 return 1
-            print(self.possibleMills(self.intersections))
+            print(self.possibleMills(self.intersections, self.player))
             self.changePlayer()
             return 0
         else:
@@ -155,14 +155,14 @@ class Game:
         else:
             self.player2PiecesOffBoard -= 1
 
-    def getNextPlayer(self):
-        if self.player == 1:
+    def getNextPlayer(self, player):
+        if player == 1:
             return 2
         else:
             return 1
 
     def checkWin(self):
-        nextPlayer = self.getNextPlayer()
+        nextPlayer = self.getNextPlayer(self.player)
         if self.playerHasNoMoves(nextPlayer) or (self.countPieces(nextPlayer) <= 2):
             print('Player ', end='')
             print(self.player, end=' wins!\n')
@@ -231,24 +231,24 @@ class Game:
                 counter += 1
         return counter
 
-    def possibleMills(self, intersections):
+    def possibleMills(self, intersections, player):
         possibelMills = 0
-        possibelMills += self.checkVerticalPossible(intersections)
-        possibelMills += self.checkHorizontalPossible(intersections)
+        possibelMills += self.checkVerticalPossible(intersections, player)
+        possibelMills += self.checkHorizontalPossible(intersections, player)
         return possibelMills
 
-    def checkHorizontalPossible(self, intersections):
+    def checkHorizontalPossible(self, intersections, player):
         possible = 0
 
         for ring in [0, 1, 2]:
             numberOfEmpty = 0
             for pos in [0, 1, 2]:
                 index = pos + 8 * ring
-                if intersections[index].getValue() == self.getNextPlayer():
+                if intersections[index].getValue() == self.getNextPlayer(player):
                     numberOfEmpty = -1    
                     break
                 elif intersections[index].getValue() == 0:
-                    if self.canBeMove(intersections[index], intersections):
+                    if self.canBeMove(intersections[index], intersections, player, [[0,ring], [1, ring], [2, ring]]):
                         numberOfEmpty += 1
                         continue
                     numberOfEmpty = -1
@@ -259,11 +259,11 @@ class Game:
             numberOfEmpty = 0
             for pos in [4, 5, 6]:
                 index = pos + 8 * ring
-                if intersections[index].getValue() == self.getNextPlayer():
+                if intersections[index].getValue() == self.getNextPlayer(player):
                     numberOfEmpty = -1    
                     break
                 elif intersections[index].getValue() == 0:
-                    if self.canBeMove(intersections[index], intersections):
+                    if self.canBeMove(intersections[index], intersections, player, [[4,ring], [5, ring], [6, ring]]):
                         numberOfEmpty += 1
                         continue
                     numberOfEmpty = -1
@@ -277,11 +277,11 @@ class Game:
             numberOfEmpty = 0
             for ring in [0, 1, 2]:
                 index = pos + 8 * ring
-                if intersections[index].getValue() == self.getNextPlayer():
+                if intersections[index].getValue() == self.getNextPlayer(player):
                     numberOfEmpty = -1    
                     break
                 elif intersections[index].getValue() == 0:
-                    if self.canBeMove(intersections[index], intersections):
+                    if self.canBeMove(intersections[index], intersections,  player, [[pos, 0], [pos, 1], [pos, 2]]):
                         numberOfEmpty += 1
                         continue
                     numberOfEmpty = -1
@@ -291,18 +291,18 @@ class Game:
 
         return possible
     
-    def checkVerticalPossible(self, intersections):
+    def checkVerticalPossible(self, intersections, player):
         possible = 0
 
         for ring in [0, 1, 2]:
             numberOfEmpty = 0
             for pos in [0, 7, 6]:
                 index = pos + 8 * ring
-                if intersections[index].getValue() == self.getNextPlayer():
+                if intersections[index].getValue() == self.getNextPlayer(player):
                     numberOfEmpty = -1    
                     break
                 elif intersections[index].getValue() == 0:
-                    if self.canBeMove(intersections[index], intersections):
+                    if self.canBeMove(intersections[index], intersections, player, [[0,ring], [7, ring], [6, ring]]):
                         numberOfEmpty += 1
                         continue
                     numberOfEmpty = -1
@@ -313,11 +313,11 @@ class Game:
             numberOfEmpty = 0
             for pos in [2, 3, 4]:
                 index = pos + 8 * ring
-                if intersections[index].getValue() == self.getNextPlayer():
+                if intersections[index].getValue() == self.getNextPlayer(player):
                     numberOfEmpty = -1    
                     break
                 elif intersections[index].getValue() == 0:
-                    if self.canBeMove(intersections[index], intersections):
+                    if self.canBeMove(intersections[index], intersections, player, [[2,ring], [3, ring], [4, ring]]):
                         numberOfEmpty += 1
                         continue
                     numberOfEmpty = -1
@@ -331,11 +331,11 @@ class Game:
             numberOfEmpty = 0
             for ring in [0, 1, 2]:
                 index = pos + 8 * ring
-                if intersections[index].getValue() == self.getNextPlayer():
+                if intersections[index].getValue() == self.getNextPlayer(player):
                     numberOfEmpty = -1    
                     break
                 elif intersections[index].getValue() == 0:
-                    if self.canBeMove(intersections[index], intersections):
+                    if self.canBeMove(intersections[index], intersections, player, [[pos, 0], [pos, 1], [pos, 2]]):
                         numberOfEmpty += 1
                         continue
                     numberOfEmpty = -1
@@ -346,18 +346,34 @@ class Game:
         return possible
         
 
-    def canBeMove(self, intersection, intersections):
+    def canBeMove(self, intersection, intersections, player, connections):
         for connection in intersection.getConnections():
-            if self.selectIntersection(connection[0], connection[1], intersections).getValue() == self.player:
+            if self.selectIntersection(connection[0], connection[1], intersections).getValue() == player and connection not in connections:
+                print(intersection.getConnections())
+                print(connection)
                 return True
         return False
 
+    def getIntersectionValuePlace(self, intersection, intersections):
+        value = 1
+        if intersection.getPos() in [1,3,5,7]:
+            value += 2
+            if intersection.getRing() == 1:
+                value += 2
+        if self.isPieceBlocked(intersection.getPos(), intersection.getRing(), intersections):
+            value -= 1
+        if intersection.getValue() == 1:
+            return value
+        return -value
 
-    def heuristic(self, intersections):
+
+    def heuristicPhase1(self, intersections):
         value = 0
         for intersection in intersections:
             if intersection.getValue() != 0:
-                pass
+                value += self.getIntersectionValuePlace(intersection, intersections)
+        value += (self.possibleMills(intersections, 1) - self.possibleMills(intersections, 2)) * 3
+                
 
     def heuristic(self, phase):
         return 1
