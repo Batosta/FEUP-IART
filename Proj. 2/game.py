@@ -89,15 +89,8 @@ class Game:
         return intersections[i]
 
     def remove(self, ring, index):
-        #print("Choose a piece from your adversary to remove.")
-        self.changePlayer()
         i = self.selecti(index, ring)
-        #if i.getValue() == self.player or i.getValue() == 0:
-        #    print("Choose a valid piece")
-        #    self.remove(ring, index)
-        #else:
         i.set(0)
-        # utilities.printMap(self.intersections)       
 
     def resetBoard(self):
         for intersection in self.intersections:
@@ -127,27 +120,18 @@ class Game:
             intersection.set(0)
             if self.check3row(intersection2):
                 return 2
-            self.checkWin()
-            self.changePlayer()
             return 1
         else:
             return 0
 
     def place(self, pos, ring):
         intersection = self.selecti(pos, ring)
-        if intersection.getValue() == 0:
-            intersection.set(self.player)
-            self.takePiece()
-            # utilities.printMap(self.intersections)
-            if self.check3row(intersection):
-                #self.remove()
-                return 1
-            print(self.possibleMills(self.intersections, self.player))
-            self.changePlayer()
-            return 0
-        else:
-            print("Choose an empty intersection")
-            return 0
+        intersection.set(self.player)
+        self.takePiece()
+        if self.check3row(intersection):
+            return 1
+        # print(self.possibleMills(self.intersections, self.player))
+        return 0
 
     def takePiece(self):
         if self.player == 1:
@@ -164,9 +148,9 @@ class Game:
     def checkWin(self):
         nextPlayer = self.getNextPlayer(self.player)
         if self.playerHasNoMoves(nextPlayer) or (self.countPieces(nextPlayer) <= 2):
-            print('Player ', end='')
-            print(self.player, end=' wins!\n')
-            exit()
+            return self.player
+        else:
+            return 0
 
         
     def pieceMoves(self, pos, ring):
@@ -179,7 +163,7 @@ class Game:
         return moves
     
     def playerHasNoMoves(self, player):
-        moves = self.playerMoves(self.player)
+        moves = self.playerMoves(player)
         if len(moves) == 0:
             return True
         else:
@@ -217,7 +201,6 @@ class Game:
             selected = self.selecti(pos, ring)
             if selected.getValue() == self.player:
                 return selected
-            print("Choose a piece you control!\n")
 
     def chooseIntersection(self):
         while True:
@@ -226,7 +209,6 @@ class Game:
             selected = self.selecti(pos, ring)
             if selected.getValue() == 0:
                 return selected
-            print("Choose an empty intersection!\n")
 
     def getPiecesOffBoard(self, color):
         if(color == 1):
