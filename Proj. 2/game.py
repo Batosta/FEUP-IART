@@ -1,4 +1,4 @@
-import utilities
+import utilities, copy
 from intersection import Intersection
 
 class Game:
@@ -194,6 +194,22 @@ class Game:
                         moves.append(connection) 
         return moves
 
+    def playerMoves_for_AI(self, player):
+        moves = []
+        for intersection in self.intersections:
+            count = 0
+            moves_aux = []
+            if (intersection.getValue() == player):
+                for connection in intersection.getConnections():
+                    if self.selecti(connection[0], connection[1]).getValue() == 0:
+                        moves_aux.append(connection)
+                        count += 1
+            if count != 0:
+                moves.append(((intersection.pos, intersection.ring), moves_aux))
+            moves_aux = []
+             
+        return moves
+
     def choosePiece(self):
         while True:
             pos = utilities.inputNumber()
@@ -349,8 +365,6 @@ class Game:
     def canBeMove(self, intersection, intersections, player, connections):
         for connection in intersection.getConnections():
             if self.selectIntersection(connection[0], connection[1], intersections).getValue() == player and connection not in connections:
-                print(intersection.getConnections())
-                print(connection)
                 return True
         return False
 
@@ -392,13 +406,51 @@ class Game:
             return positions
         #Mover peças
         if phase == 2:
-            return self.playerMoves(self.player)
+            return self.playerMoves_for_AI(self.player)
         #Remover peça do outro jogador
         if phase == 4:
             for position in self.intersections:
                 if position.value != self.player and position.value != 0:
                     positions.append((position.pos, position.ring))
             return positions
+
+    def children(self, phase):
+        children = []
+
+        if phase == 1:
+            for intersection in self.intersections:
+                if intersection.value == 0:
+                    temporaryGame = copy.deepcopy(self)
+                    temporaryGame.place(intersection.pos, intersection.ring)
+                    children.append((temporaryGame, intersection.ring, intersection.pos))
+
+        if phase == 2:
+            moves = self.playerMoves_for_AI(phase)
+            for move in moves:
+                pos_to_move = move[0][0] 
+                ring_to_move = move[0][1]
+                for position in move[1]:
+                    temporaryGame = copy.deepcopy(self)
+                    temporaryGame.move(pos_to_move, ring_to_move, position[0], position[1])
+                    children.append((temporaryGame, pos_to_move, ring_to_move, position[0], position[1]))
+
+        if phase == 3:
+            for intersection in self.intersections:
+                if intersection.value == self.player:
+                    for intersection_aux in self.intersections:
+                        if intersection_aux.value == 0:
+                            temporaryGame = copy.deepcopy(self)
+                            temporaryGame.move(intersection.pos, intersection.ring, intersection_aux.pos, intersection_aux.ring)
+                            children.append((temporaryGame, intersection.ring, intersection.pos, intersection_aux.ring, intersection_aux.pos))
+
+        if phase == 4:
+            for intersection in self.intersections:
+                if intersection.value != 0 and intersection.value != self.player:
+                    temporaryGame = copy.deepcopy(self)
+                    temporaryGame.place(intersection.pos, intersection.ring)
+                    children.append((temporaryGame, intersection.ring, intersection.pos))
+
+        return children
 
     def minimax(self, depth, alpha, beta, maximizingPlayer, phase):
 
@@ -412,7 +464,12 @@ class Game:
 
             value = -math.inf
             children = self.children(phase)
-            index, ring = random.choice(valid_locations)
+
+            if phase != 2:
+                index, ring = random.choice(valid_locations)
+            else:
+                index, ring = 0, 0
+                index_to_move, ring_to_move = 0, 0
 
             for child in children:
 
@@ -430,6 +487,12 @@ class Game:
                 new_score = minimax(child[0], depth - 1, alpha, beta, False, phase)
 
                 if new_score[2] > value:
+                    if phase == 2:
+                        value = new_score[2]
+                        index = child[2]
+                        ring = child[1]
+                        index_to_move = child[4]
+                        ring_to_move = child[3]                        
                     value = new_score[2]
                     index = child[2]
                     ring = child[1]
@@ -439,13 +502,21 @@ class Game:
                 if beta <= alpha:
                     break
 
-            return index, ring, value
+            if phase != 2:
+                return index, ring, value
+            else:
+                return index, ring, index_to_move, ring_to_move, value
 
         else:
 
             value = math.inf
             children = self.children(phase)
-            index, ring = random.choice(valid_locations)
+
+            if phase != 2:
+                index, ring = random.choice(valid_locations)
+            else:
+                index, ring = 0, 0
+                index_to_move, ring_to_move = 0, 0
 
             for child in children:
 
@@ -462,14 +533,23 @@ class Game:
 
                 new_score = minimax(child[0], depth - 1, alpha, beta, True, phrase)
 
-                if new_score[2] < value:
+                if new_score[2] > value:
+                    if phase == 2:
+                        value = new_score[2]
+                        index = child[2]
+                        ring = child[1]
+                        index_to_move = child[4]
+                        ring_to_move = child[3]                        
                     value = new_score[2]
                     index = child[2]
                     ring = child[1]
-                
-                beta = min(beta, value)
+
+                alpha = max(alpha, value)
                 
                 if beta <= alpha:
                     break
-            
-            return index, ring, value
+
+            if phase != 2:
+                return index, ring, value
+            else:
+                return index, ring, index_to_move, ring_to_move, value
