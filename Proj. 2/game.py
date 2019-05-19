@@ -336,29 +336,64 @@ class Game:
                 return True
         return False
 
-    def getIntersectionValuePlace(self, intersection, intersections):
+    def getIntersectionValuePlace(self, intersection, intersections , player):
         value = 1
         if intersection.getPos() in [1,3,5,7]:
-            value += 2
+            value += 1
             if intersection.getRing() == 1:
                 value += 2
         if self.isPieceBlocked(intersection.getPos(), intersection.getRing(), intersections):
             value -= 1
-        if intersection.getValue() == 1:
+        if intersection.getValue() == player:
             return value
         return -value
 
+    def getIntersectionValuePlace(self, intersection, intersections , player):
+        value = 1
+        if intersection.getPos() in [1,3,5,7]:
+            value += 1
+            if intersection.getRing() == 1:
+                value += 2
+        if self.isPieceBlocked(intersection.getPos(), intersection.getRing(), intersections):
+            value -= 1
+        if intersection.getValue() == player:
+            return value
+        return -value
+    
+    def getIntersectionValueMove(self, intersection, intersections , player):
+        value = 1
+        if intersection.getPos() in [1,3,5,7]:
+            value += 1
+            if intersection.getRing() == 1:
+                value += 2
+        if self.isPieceBlocked(intersection.getPos(), intersection.getRing(), intersections):
+            value -= 3
+        if intersection.getValue() == player:
+            return value
+        return -value
 
-    def heuristicPhase1(self, intersections):
+    def heuristicPhase1(self, intersections, player):
         value = 0
         for intersection in intersections:
             if intersection.getValue() != 0:
-                value += self.getIntersectionValuePlace(intersection, intersections)
-        value += (self.possibleMills(intersections, 1) - self.possibleMills(intersections, 2)) * 3
+                value += self.getIntersectionValuePlace(intersection, intersections, player)
+        value += (self.possibleMills(intersections, player) - self.possibleMills(intersections, self.getNextPlayer(player))) * 3
+        return value
+
+    def heuristicPhase2(self, intersections, player):
+        value = 0
+        for intersection in intersections:
+            if intersection.getValue() != 0:
+                value += self.getIntersectionValueMove(intersection, intersections, player)
+        value += self.possibleMills(intersections, player) * 5 - self.possibleMills(intersections, self.getNextPlayer(player)) * 6
+        return value
                 
 
-    def heuristic(self, phase):
-        return 1
+    def heuristic(self, phase, intersections, player):
+        if phase == 1:
+            return self.heuristicPhase1(intersections, player)
+        elif phase == 2:
+            return self.heuristicPhase2(intersections, player)
 
     """
     No caso de phase 1 ou 4, retorna as posições onde se podem colocar peças e que peças pode remover respetivamente
