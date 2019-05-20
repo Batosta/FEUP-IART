@@ -492,12 +492,12 @@ class Game:
 
             for child in children:
 
-                intersection = self.selecti(index, ring)
+                intersection = child.selecti(index, ring)
 
-                if self.check3row(intersection):
+                if child.check3row(intersection):
                     phase = 4 #remove
-                elif self.player1PiecesOffBoard == 0 and self.player2PiecesOffBoard == 0:
-                    if self.countPieces(self.player) == 3:
+                elif child.player1PiecesOffBoard == 0 and child.player2PiecesOffBoard == 0:
+                    if child.countPieces(child.player) == 3:
                         phase = 3
                     phase = 2
                 else:
@@ -505,16 +505,16 @@ class Game:
 
                 new_score = minimax(child[0], depth - 1, alpha, beta, False, phase)
 
-                if new_score[2] > value:
+                if new_score[0] > value:
                     if phase == 2:
-                        value = new_score[2]
-                        index = child[2]
-                        ring = child[1]
-                        index_to_move = child[4]
-                        ring_to_move = child[3]                        
-                    value = new_score[2]
-                    index = child[2]
-                    ring = child[1]
+                        value = new_score[0]
+                        index = child[1]
+                        ring = child[2]
+                        index_to_move = child[3]
+                        ring_to_move = child[4]                        
+                    value = new_score[0]
+                    index = child[1]
+                    ring = child[2]
 
                 alpha = max(alpha, value)
                 
@@ -522,9 +522,9 @@ class Game:
                     break
 
             if phase != 2:
-                return index, ring, value
+                return value, index, ring
             else:
-                return index, ring, index_to_move, ring_to_move, value
+                return value, index, ring, index_to_move, ring_to_move
 
         else:
 
@@ -539,12 +539,12 @@ class Game:
 
             for child in children:
 
-                intersection = self.selecti(index, ring)
+                intersection = child.selecti(index, ring)
 
-                if self.check3row(intersection):
+                if child.check3row(intersection):
                     phase = 4 #remove
-                elif self.player1PiecesOffBoard == 0 and self.player2PiecesOffBoard == 0:
-                    if self.countPieces(self.player) == 3:
+                elif child.player1PiecesOffBoard == 0 and child.player2PiecesOffBoard == 0:
+                    if child.countPieces(child.player) == 3:
                         phase = 3
                     phase = 2
                 else:
@@ -552,23 +552,22 @@ class Game:
 
                 new_score = minimax(child[0], depth - 1, alpha, beta, True, phrase)
 
-                if new_score[2] > value:
+                if new_score[0] > value:
                     if phase == 2:
-                        value = new_score[2]
-                        index = child[2]
-                        ring = child[1]
-                        index_to_move = child[4]
-                        ring_to_move = child[3]                        
-                    value = new_score[2]
-                    index = child[2]
-                    ring = child[1]
+                        value = new_score[0]
+                        index = child[1]
+                        ring = child[2]
+                        index_to_move = child[3]
+                        ring_to_move = child[4]                        
+                    value = new_score[0]
+                    index = child[1]
+                    ring = child[2]
 
-                alpha = max(alpha, value)
-                
+                beta = min(beta, value)
                 if beta <= alpha:
                     break
 
             if phase != 2:
-                return index, ring, value
+                return value, index, ring
             else:
-                return index, ring, index_to_move, ring_to_move, value
+                return value, index, ring, index_to_move, ring_to_move
