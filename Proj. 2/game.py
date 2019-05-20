@@ -218,6 +218,8 @@ class Game:
 
     def isPieceBlocked(self, pos, ring, intersections):
         intersection = self.selectIntersection(pos, ring, intersections)
+        if self.countPieces(intersection.getValue()) == 3:
+            return False
         for connection in intersection.getConnections():
             if self.selectIntersection(connection[0], connection[1], intersections).getValue() == 0:
                 return False
