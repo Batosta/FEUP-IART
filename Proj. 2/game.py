@@ -108,6 +108,13 @@ class Game:
             if intersection.getValue() == player:
                 c += 1
         return c
+
+    def countPiecesAI(self, intersections, player):
+        c = 0
+        for intersection in intersections:
+            if intersection.getValue() == player:
+                c += 1
+        return c
     
     def canmove(self, pos, ring, pos2, ring2):
         return [pos2, ring2] in self.playerMoves(self.player) and [pos2, ring2] in self.selecti(pos, ring).getConnections()
@@ -151,7 +158,6 @@ class Game:
             return self.player
         else:
             return 0
-
         
     def pieceMoves(self, pos, ring):
         intersection = self.selecti(pos, ring)
@@ -178,6 +184,11 @@ class Game:
                         moves.append(connection) 
         return moves
 
+    def checkAIwin(self, intersections, player):
+        if len(self.moves_for_AI(intersections, player)) == 0 or self.countPiecesAI(intersections, player) < 3:
+            return True
+        return False
+
     def playerMoves_for_AI(self, player):
         moves = []
         for intersection in self.intersections:
@@ -186,6 +197,25 @@ class Game:
             if (intersection.getValue() == player):
                 for connection in intersection.getConnections():
                     if self.selecti(connection[0], connection[1]).getValue() == 0:
+                        moves_aux.append(connection)
+                        count += 1
+            if count != 0:
+                positions = []
+                positions.append(intersection.pos)
+                positions.append(intersection.ring)
+                moves.append((positions, moves_aux))
+            moves_aux = []
+             
+        return moves
+
+    def moves_for_AI(self, intersections, player):
+        moves = []
+        for intersection in intersections:
+            count = 0
+            moves_aux = []
+            if (intersection.getValue() == player):
+                for connection in intersection.getConnections():
+                    if self.selectIntersection(connection[0], connection[1], intersections).getValue() == 0:
                         moves_aux.append(connection)
                         count += 1
             if count != 0:
@@ -366,18 +396,6 @@ class Game:
         if intersection.getValue() == player:
             return value
         return -value
-
-    def getIntersectionValuePlace(self, intersection, intersections , player):
-        value = 1
-        if intersection.getPos() in [1,3,5,7]:
-            value += 1
-            if intersection.getRing() == 1:
-                value += 2
-        if self.isPieceBlocked(intersection.getPos(), intersection.getRing(), intersections):
-            value -= 1
-        if intersection.getValue() == player:
-            return value
-        return -value
     
     def getIntersectionValueMove(self, intersection, intersections , player):
         value = 1
@@ -392,6 +410,10 @@ class Game:
         return -value
 
     def heuristicPhase1(self, intersections, player):
+        if self.checkAIwin(intersections, self.getNextPlayer(player)):
+            return -1000
+        elif self.checkAIwin(intersections, player):
+            return 1000
         value = 0
         for intersection in intersections:
             if intersection.getValue() != 0:
