@@ -516,7 +516,10 @@ class Game:
 
             for child in children:
 
-                intersection = child[0].selecti(index, ring)
+                if phase == 2 or phase == 3:
+                    intersection = child[0].selecti(child[3], child[4])
+                else:
+                    intersection = child[0].selecti(child[1], child[2])
 
                 if child[0].check3row(intersection):
                     phase = 4 #remove
@@ -544,7 +547,7 @@ class Game:
                 alpha = max(alpha, value)
                 if beta <= alpha:
                     break
-            if phase != 2 or phase != 3:
+            if phase != 2 and phase != 3:
                 return value, index, ring
             else:
                 return value, index, ring, index_to_move, ring_to_move
@@ -564,7 +567,10 @@ class Game:
 
             for child in children:
 
-                intersection = child[0].selecti(index, ring)
+                if phase == 2 or phase == 3:
+                    intersection = child[0].selecti(child[3], child[4])
+                else:
+                    intersection = child[0].selecti(child[1], child[2])
 
                 if child[0].check3row(intersection):
                     phase = 4 #remove
@@ -591,7 +597,7 @@ class Game:
                 beta = min(beta, value)
                 if beta <= alpha:
                     break
-            if phase != 2 or phase != 3:
+            if phase != 2 and phase != 3:
                 return value, index, ring
             else:
                 return value, index, ring, index_to_move, ring_to_move

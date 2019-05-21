@@ -292,6 +292,8 @@ def main():
         while placing_phase != 18 or can_remove == 1:
 
             for event in pygame.event.get():
+
+                print(game.minimax(1,-math.inf, math.inf,True,1))
             
                 if (event.type == pygame.QUIT or event.type == pygame.K_ESCAPE):
                     self.running = False
@@ -413,16 +415,6 @@ def main():
     startGame()
 
     if option == 0:
-        game.place(7,1)
-        game.place(5,2)
-        game.place(3,2)
-        game.changePlayer()
-        game.place(2,2)
-        game.place(7,2)
-        game.place(5,2)
-        game.player2PiecesOffBoard = 0
-        game.player1PiecesOffBoard = 0
-        print(game.minimax(3,-math.inf, math.inf,True,2))
         running = humanVsHuman()
     elif option == 1:
         running = humanVsAi()
