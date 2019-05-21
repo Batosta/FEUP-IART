@@ -410,10 +410,6 @@ class Game:
         return -value
 
     def heuristicPhase1(self, intersections, player):
-        if self.checkAIwin(intersections, self.getNextPlayer(player)):
-            return -1000
-        elif self.checkAIwin(intersections, player):
-            return 1000
         value = 0
         for intersection in intersections:
             if intersection.getValue() != 0:
@@ -422,6 +418,10 @@ class Game:
         return value
 
     def heuristicPhase2(self, intersections, player):
+        if self.checkAIwin(intersections, self.getNextPlayer(player)):
+            return -1000
+        elif self.checkAIwin(intersections, player):
+            return 1000
         value = 0
         for intersection in intersections:
             if intersection.getValue() != 0:
