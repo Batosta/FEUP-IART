@@ -1,4 +1,4 @@
-import utilities, copy
+import utilities, copy, math, random
 from intersection import Intersection
 
 class Game:
@@ -189,7 +189,10 @@ class Game:
                         moves_aux.append(connection)
                         count += 1
             if count != 0:
-                moves.append(((intersection.pos, intersection.ring), moves_aux))
+                positions = []
+                positions.append(intersection.pos)
+                positions.append(intersection.ring)
+                moves.append((positions, moves_aux))
             moves_aux = []
              
         return moves
@@ -406,9 +409,9 @@ class Game:
                 
 
     def heuristic(self, phase, intersections, player):
-        if phase == 1:
+        if phase == 1 or phase == 4:
             return self.heuristicPhase1(intersections, player)
-        elif phase == 2:
+        elif phase == 2 or phase == 3:
             return self.heuristicPhase2(intersections, player)
 
     """
@@ -418,7 +421,7 @@ class Game:
     def get_valid_locations(self, phase):
         positions = []
         #Colocar peças
-        if phase == 1 or phase == 3:
+        if phase == 1:
             for position in self.intersections:
                 if position.value == 0:
                     positions.append((position.pos, position.ring))
@@ -426,6 +429,25 @@ class Game:
         #Mover peças
         if phase == 2:
             return self.playerMoves_for_AI(self.player)
+        if phase == 3:
+            empty_positions = []
+            for empty_pos in self.intersections:
+                if empty_pos.value == 0:
+                    coords = []
+                    coords.append(empty_pos.pos)
+                    coords.append(empty_pos.ring)
+                    empty_positions.append(coords)
+
+            for empty_pos in self.intersections:
+                if empty_pos.value == self.player:
+                    coords = []
+                    coords.append(empty_pos.pos)
+                    coords.append(empty_pos.ring)
+                    positions.append((coords, empty_positions))
+
+            return positions
+            
+
         #Remover peça do outro jogador
         if phase == 4:
             for position in self.intersections:
@@ -441,7 +463,7 @@ class Game:
                 if intersection.value == 0:
                     temporaryGame = copy.deepcopy(self)
                     temporaryGame.place(intersection.pos, intersection.ring)
-                    children.append((temporaryGame, intersection.ring, intersection.pos))
+                    children.append((temporaryGame, intersection.pos, intersection.ring))
 
         if phase == 2:
             moves = self.playerMoves_for_AI(phase)
@@ -460,72 +482,69 @@ class Game:
                         if intersection_aux.value == 0:
                             temporaryGame = copy.deepcopy(self)
                             temporaryGame.move(intersection.pos, intersection.ring, intersection_aux.pos, intersection_aux.ring)
-                            children.append((temporaryGame, intersection.ring, intersection.pos, intersection_aux.ring, intersection_aux.pos))
+                            children.append((temporaryGame, intersection.pos, intersection.ring, intersection_aux.pos, intersection_aux.ring))
 
         if phase == 4:
             for intersection in self.intersections:
                 if intersection.value != 0 and intersection.value != self.player:
                     temporaryGame = copy.deepcopy(self)
                     temporaryGame.place(intersection.pos, intersection.ring)
-                    children.append((temporaryGame, intersection.ring, intersection.pos))
+                    children.append((temporaryGame, intersection.pos, intersection.ring))
 
         return children
 
     def minimax(self, depth, alpha, beta, maximizingPlayer, phase):
-
-        #colocar peças
-        if (depth == 0 or self.checkWin()):
-            if phase == 2:
-                return self.heuristic(phase), None, None, None, None
+        if depth == 0 or self.checkWin() == 0:
+            if phase == 2 or phase == 3:
+                return self.heuristic(phase, self.intersections, self.player), None, None, None, None
             else:
-                return self.heuristic(phase), None, None
-        
-        valid_locations = self.get_valid_locations(phase)
+                return self.heuristic(phase, self.intersections, self.player), None, None
     
+        valid_locations = self.get_valid_locations(phase)    
         if maximizingPlayer:
 
             value = -math.inf
             children = self.children(phase)
 
-            if phase != 2:
+            if phase != 2 and phase != 3:
                 index, ring = random.choice(valid_locations)
             else:
                 rand = random.choice(valid_locations)
                 index, ring = random.choice(rand[1])
-                index_to_move, ring_to_move = random(choice(rand[0]))
+                index_to_move = rand[0][0]
+                ring_to_move = rand[0][1]
 
             for child in children:
 
-                intersection = child.selecti(index, ring)
+                intersection = child[0].selecti(index, ring)
 
-                if child.check3row(intersection):
+                if child[0].check3row(intersection):
                     phase = 4 #remove
-                elif child.player1PiecesOffBoard == 0 and child.player2PiecesOffBoard == 0:
-                    if child.countPieces(child.player) == 3:
+                elif child[0].player1PiecesOffBoard == 0 and child[0].player2PiecesOffBoard == 0:
+                    if child[0].countPieces(child[0].player) == 3:
                         phase = 3
                     phase = 2
                 else:
                     phase = 1
 
-                new_score = minimax(child[0], depth - 1, alpha, beta, False, phase)
+                new_score = child[0].minimax(depth - 1, alpha, beta, False, phase)
 
                 if new_score[0] > value:
-                    if phase == 2:
+                    if phase == 2 or phase == 3:
                         value = new_score[0]
                         index = child[1]
                         ring = child[2]
                         index_to_move = child[3]
-                        ring_to_move = child[4]                        
-                    value = new_score[0]
-                    index = child[1]
-                    ring = child[2]
+                        ring_to_move = child[4] 
+                    else:                       
+                        value = new_score[0]
+                        index = child[1]
+                        ring = child[2]
 
                 alpha = max(alpha, value)
-                
                 if beta <= alpha:
                     break
-
-            if phase != 2:
+            if phase != 2 or phase != 3:
                 return value, index, ring
             else:
                 return value, index, ring, index_to_move, ring_to_move
@@ -535,44 +554,44 @@ class Game:
             value = math.inf
             children = self.children(phase)
 
-            if phase != 2:
+            if phase != 2 and phase != 3:
                 index, ring = random.choice(valid_locations)
             else:
                 rand = random.choice(valid_locations)
                 index, ring = random.choice(rand[1])
-                index_to_move, ring_to_move = random(choice(rand[0]))
+                index_to_move = rand[0][0]
+                ring_to_move = rand[0][1]
 
             for child in children:
 
-                intersection = child.selecti(index, ring)
+                intersection = child[0].selecti(index, ring)
 
-                if child.check3row(intersection):
+                if child[0].check3row(intersection):
                     phase = 4 #remove
-                elif child.player1PiecesOffBoard == 0 and child.player2PiecesOffBoard == 0:
-                    if child.countPieces(child.player) == 3:
+                elif child[0].player1PiecesOffBoard == 0 and child[0].player2PiecesOffBoard == 0:
+                    if child[0].countPieces(child[0].player) == 3:
                         phase = 3
                     phase = 2
                 else:
                     phase = 1
 
-                new_score = minimax(child[0], depth - 1, alpha, beta, True, phrase)
+                new_score = child[0].minimax(depth - 1, alpha, beta, True, phase)
 
-                if new_score[0] > value:
-                    if phase == 2:
+                if new_score[0] < value:
+                    if phase == 2 or phase == 3:
                         value = new_score[0]
                         index = child[1]
                         ring = child[2]
                         index_to_move = child[3]
-                        ring_to_move = child[4]                        
-                    value = new_score[0]
-                    index = child[1]
-                    ring = child[2]
-
+                        ring_to_move = child[4] 
+                    else:                       
+                        value = new_score[0]
+                        index = child[1]
+                        ring = child[2]
                 beta = min(beta, value)
                 if beta <= alpha:
                     break
-
-            if phase != 2:
+            if phase != 2 or phase != 3:
                 return value, index, ring
             else:
                 return value, index, ring, index_to_move, ring_to_move

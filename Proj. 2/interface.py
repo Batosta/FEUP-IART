@@ -1,5 +1,5 @@
 # # import the pygame module, so you can use it
-import pygame, time, game, utilities, os, sys
+import pygame, time, game, utilities, os, sys, math
 from game import Game
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -131,28 +131,6 @@ def main():
             r+=1
         return (-1, -1)
 
-
-
-    def humanVsAi():
-
-        running = 0
-
-        placing_phase = 0
-        moving_phase = 0
-        can_remove = 0
-        is_moving = 0
-        movingIndex = -1
-        movingRing = -1
-
-        while running == 0:
-
-            if game.player == 1:            # human
-                running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing = humanPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing)
-            else:                           # ai
-                game.minimax(depth, alpha, beta, maximizingPlayer, phase)
-
-        return running
-
     def AiVsAi():
         
         running = 0
@@ -180,9 +158,136 @@ def main():
         
         return running
 
+    def humanVsAi():
+        
+        running = 0
+
+        placing_phase = 0
+        moving_phase = 0
+        can_remove = 0
+        is_moving = 0
+        movingIndex = -1
+        movingRing = -1
+
+        while running == 0:
+            if game.player == 1:
+                running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing = humanPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing)
+            else:
+                running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing = AiPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing)
+
+        return running
+
+
+    def AiPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing):
+
+        # Placing pieces phase
+        while placing_phase != 18 or can_remove == 1:
+
+            for event in pygame.event.get():
+            
+                if (event.type == pygame.QUIT or event.type == pygame.K_ESCAPE):
+                    self.running = False
+                    sys.exit()
+                
+                if can_remove == 1:                             # remove a piece
+                    
+                    #returns value, index, ring
+                    minimax_values = game.minimax(1, -math.inf, math.inf, True, 4)
+
+                    index = minimax_values[1]
+                    ring = minimax_values[2]
+
+                    game.remove(ring, index)
+                    can_remove = 0
+                    if placing_phase != 18:
+                        game.changePlayer()
+                        draw_game(1)
+                        return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+                    else:
+                        checkWin = game.checkWin()
+                        game.changePlayer()
+                        draw_game(2)
+                        return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+
+                else:                                           # place a piece
+
+                    minimax_values = game.minimax(1, -math.inf, math.inf, True, 1)
+
+                    index = minimax_values[1]
+                    ring = minimax_values[2]
+
+                    can_remove = game.place(index, ring)
+                    placing_phase += 1
+                    if can_remove == 1:
+                        draw_game(3)
+                        return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+                    elif placing_phase == 18:
+                        checkWin = game.checkWin()
+                        game.changePlayer()
+                        draw_game(2)
+                        return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+                    else:
+                        game.changePlayer()
+                        draw_game(1)
+                        return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+
+                pygame.display.update()
+
+
+        # Moving pieces phase
+        while moving_phase != 1:
+
+            for event in pygame.event.get():
+
+                if (event.type == pygame.QUIT or event.type == pygame.K_ESCAPE):
+                    running = False
+                    sys.exit()
+                
+                if can_remove == 1:                             # remove a piece
+                    #returns value, index, ring
+                    minimax_values = game.minimax(1, -math.inf, math.inf, True, 4)
+
+                    index = minimax_values[1]
+                    ring = minimax_values[2]
+    
+                    value = game.selecti(index, ring).getValue()
+                    if value != game.player and value != 0:
+                        game.remove(ring, index)
+                        can_remove = 0
+                        checkWin = game.checkWin()
+                        game.changePlayer()
+                        draw_game(2)
+                        return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+
+                elif is_moving == 0:                            # choose a piece to move
+                    #returns value, index, ring
+                    if game.countPieces(game.player) == 3:
+                        minimax_values = game.minimax(1, -math.inf, math.inf, True, 3)
+                    else:
+                        minimax_values = game.minimax(1, -math.inf, math.inf, True, 2)
+
+                    index = minimax_values[1]
+                    ring = minimax_values[2]
+                    index_to = minimax_values[3]
+                    ring_to = minimax_values[4]
+
+                    if game.countPieces(game.player) == 3 or len(game.pieceMoves(index, ring)) != 0:
+                        movingResult = game.move(index, ring, index_to, ring_to)
+                        if movingResult != 0:
+                            movingIndex = -1
+                            movingRing = -1
+                            if movingResult == 2:
+                                can_remove = 1
+                                draw_game(3)
+                                return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+                            else:
+                                checkWin = game.checkWin()
+                                game.changePlayer()
+                                draw_game(2)
+                                return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+                pygame.display.update()
 
     def humanPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing):
-
         # Placing pieces phase
         while placing_phase != 18 or can_remove == 1:
 
@@ -294,8 +399,6 @@ def main():
                                         return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
                 pygame.display.update()
 
-
-
     def startGame():
         create_circle_coords()
         draw_game(1)
@@ -307,10 +410,19 @@ def main():
         time.sleep(5)
         sys.exit()
 
-
     startGame()
 
     if option == 0:
+        game.place(7,1)
+        game.place(5,2)
+        game.place(3,2)
+        game.changePlayer()
+        game.place(2,2)
+        game.place(7,2)
+        game.place(5,2)
+        game.player2PiecesOffBoard = 0
+        game.player1PiecesOffBoard = 0
+        print(game.minimax(3,-math.inf, math.inf,True,2))
         running = humanVsHuman()
     elif option == 1:
         running = humanVsAi()
