@@ -475,7 +475,10 @@ class Game:
 
         #colocar peças
         if (depth == 0 or self.checkWin()):
-            return None, None, self.heuristic(phase)
+            if phase == 2:
+                return self.heuristic(phase), None, None, None, None
+            else:
+                return self.heuristic(phase), None, None
         
         valid_locations = self.get_valid_locations(phase)
     
@@ -487,8 +490,9 @@ class Game:
             if phase != 2:
                 index, ring = random.choice(valid_locations)
             else:
-                index, ring = 0, 0
-                index_to_move, ring_to_move = 0, 0
+                rand = random.choice(valid_locations)
+                index, ring = random.choice(rand[1])
+                index_to_move, ring_to_move = random(choice(rand[0]))
 
             for child in children:
 
@@ -534,8 +538,9 @@ class Game:
             if phase != 2:
                 index, ring = random.choice(valid_locations)
             else:
-                index, ring = 0, 0
-                index_to_move, ring_to_move = 0, 0
+                rand = random.choice(valid_locations)
+                index, ring = random.choice(rand[1])
+                index_to_move, ring_to_move = random(choice(rand[0]))
 
             for child in children:
 
