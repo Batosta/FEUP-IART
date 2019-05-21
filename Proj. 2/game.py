@@ -154,7 +154,7 @@ class Game:
 
     def checkWin(self):
         nextPlayer = self.getNextPlayer(self.player)
-        if self.playerHasNoMoves(nextPlayer) or (self.countPieces(nextPlayer) <= 2):
+        if (self.playerHasNoMoves(nextPlayer) or self.countPieces(nextPlayer) <= 2) and (self.player1PiecesOffBoard == 0 and self.player2PiecesOffBoard == 0):
             return self.player
         else:
             return 0
@@ -516,7 +516,7 @@ class Game:
         return children
 
     def minimax(self, depth, alpha, beta, maximizingPlayer, phase):
-        if depth == 0 or self.checkWin() == 0:
+        if depth == 0 or self.checkWin() != 0:
             if phase == 2 or phase == 3:
                 return self.heuristic(phase, self.intersections, self.player), None, None, None, None
             else:
