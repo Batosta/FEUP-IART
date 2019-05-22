@@ -533,9 +533,11 @@ class Game:
                 index_to_move = rand[0][0]
                 ring_to_move = rand[0][1]
 
+            previous_phase = phase
+
             for child in children:
 
-                if phase == 2 or phase == 3:
+                if (phase == 2 or phase == 3) and (previous_phase != 1 and previous_phase != 4):
                     intersection = child[0].selecti(child[3], child[4])
                 else:
                     intersection = child[0].selecti(child[1], child[2])
@@ -552,7 +554,7 @@ class Game:
                 new_score = child[0].minimax(depth - 1, alpha, beta, False, phase)
 
                 if new_score[0] > value:
-                    if phase == 2 or phase == 3:
+                    if (phase == 2 or phase == 3) and (previous_phase != 1 and previous_phase != 4):
                         value = new_score[0]
                         index = child[1]
                         ring = child[2]
@@ -566,10 +568,10 @@ class Game:
                 alpha = max(alpha, value)
                 if beta <= alpha:
                     break
-            if phase != 2 and phase != 3:
-                return value, index, ring
-            else:
+            if (phase == 2 or phase == 3) and (previous_phase != 1 and previous_phase != 4):
                 return value, index, ring, index_to_move, ring_to_move
+            else:
+                return value, index, ring
 
         else:
 
@@ -584,9 +586,12 @@ class Game:
                 index_to_move = rand[0][0]
                 ring_to_move = rand[0][1]
 
+            previous_phase = phase
+
             for child in children:
 
-                if phase == 2 or phase == 3:
+
+                if (phase == 2 or phase == 3) and (previous_phase != 1 and previous_phase != 4):
                     intersection = child[0].selecti(child[3], child[4])
                 else:
                     intersection = child[0].selecti(child[1], child[2])
@@ -603,7 +608,7 @@ class Game:
                 new_score = child[0].minimax(depth - 1, alpha, beta, True, phase)
 
                 if new_score[0] < value:
-                    if phase == 2 or phase == 3:
+                    if (phase == 2 or phase == 3) and (previous_phase != 1 and previous_phase != 4):
                         value = new_score[0]
                         index = child[1]
                         ring = child[2]
@@ -616,7 +621,7 @@ class Game:
                 beta = min(beta, value)
                 if beta <= alpha:
                     break
-            if phase != 2 and phase != 3:
-                return value, index, ring
-            else:
+            if (phase == 2 or phase == 3) and (previous_phase != 1 and previous_phase != 4):
                 return value, index, ring, index_to_move, ring_to_move
+            else:
+                return value, index, ring

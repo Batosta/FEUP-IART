@@ -168,18 +168,19 @@ def main():
         is_moving = 0
         movingIndex = -1
         movingRing = -1
+        movingIndexTo = -1
+        movingRingTo = -1
 
         while running == 0:
             if game.player == 1:
                 running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing = humanPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing)
             else:
-                running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing = AiPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing)
+                running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo = AiPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo)
 
         return running
 
 
-    def AiPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing):
-
+    def AiPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo):
         # Placing pieces phase
         while placing_phase != 18 or can_remove == 1:
 
@@ -190,52 +191,45 @@ def main():
                     sys.exit()
                 
                 if can_remove == 1:                             # remove a piece
-                    
-                    #returns value, index, ring
                     minimax_values = game.minimax(1, -math.inf, math.inf, True, 4)
-
                     index = minimax_values[1]
                     ring = minimax_values[2]
-
                     game.remove(ring, index)
                     can_remove = 0
                     if placing_phase != 18:
                         game.changePlayer()
                         draw_game(1)
-                        return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+                        return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo
                     else:
                         checkWin = game.checkWin()
                         game.changePlayer()
                         draw_game(2)
-                        return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
-
+                        return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo
                 else:                                           # place a piece
-
-                    minimax_values = game.minimax(1, -math.inf, math.inf, True, 1)
-
-                    index = minimax_values[1]
-                    ring = minimax_values[2]
-
-                    can_remove = game.place(index, ring)
-                    placing_phase += 1
-                    if can_remove == 1:
-                        draw_game(3)
-                        return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
-                    elif placing_phase == 18:
-                        checkWin = game.checkWin()
-                        game.changePlayer()
-                        draw_game(2)
-                        return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
-                    else:
-                        game.changePlayer()
-                        draw_game(1)
-                        return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+                        minimax_values = game.minimax(1, -math.inf, math.inf, True, 1)
+                        index = minimax_values[1]
+                        ring = minimax_values[2]
+                        can_remove = game.place(index, ring)
+                        placing_phase += 1
+                        if can_remove == 1:
+                            draw_game(3)
+                            return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo
+                        elif placing_phase == 18:
+                            checkWin = game.checkWin()
+                            game.changePlayer()
+                            draw_game(2)
+                            return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo
+                        else:
+                            game.changePlayer()
+                            draw_game(1)
+                            return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo
 
                 pygame.display.update()
 
 
         # Moving pieces phase
         while moving_phase != 1:
+
             for event in pygame.event.get():
 
                 if (event.type == pygame.QUIT or event.type == pygame.K_ESCAPE):
@@ -243,47 +237,51 @@ def main():
                     sys.exit()
                 
                 if can_remove == 1:                             # remove a piece
-                    #returns value, index, ring
                     minimax_values = game.minimax(1, -math.inf, math.inf, True, 4)
-
                     index = minimax_values[1]
                     ring = minimax_values[2]
-    
-                    value = game.selecti(index, ring).getValue()
-                    if value != game.player and value != 0:
-                        game.remove(ring, index)
-                        can_remove = 0
-                        checkWin = game.checkWin()
-                        game.changePlayer()
-                        draw_game(2)
-                        return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+                    game.remove(ring, index)
+                    can_remove = 0
+                    checkWin = game.checkWin()
+                    game.changePlayer()
+                    draw_game(2)
+                    return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo
 
-                                            # choose a piece to move
-                #returns value, index, ring
-                if game.countPieces(game.player) == 3:
-                    minimax_values = game.minimax(1, -math.inf, math.inf, True, 3)
-                else:
-                    minimax_values = game.minimax(1, -math.inf, math.inf, True, 2)
+                elif is_moving == 0:                            # choose a piece to move
+                    if game.countPieces(game.player) == 3:
+                        minimax_values = game.minimax(1, -math.inf, math.inf, True, 3)
+                    else:
+                        minimax_values = game.minimax(1, -math.inf, math.inf, True, 2)
+                        
+                    index = minimax_values[1]
+                    ring = minimax_values[2]
+                    index_to = minimax_values[3]
+                    ring_to = minimax_values[4]
 
-                index = minimax_values[1]
-                ring = minimax_values[2]
-                index_to = minimax_values[3]
-                ring_to = minimax_values[4]
+                    is_moving = 1
+                    movingIndex = index
+                    movingRing = ring
+                    movingIndexTo = index_to
+                    movingRingTo = ring_to
+                    return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo
 
-                if game.countPieces(game.player) == 3 or len(game.pieceMoves(index, ring)) != 0:
-                    movingResult = game.move(index, ring, index_to, ring_to)
+                else:                                           # choose where to move the piece
+                    movingResult = game.move(movingIndex, movingRing, movingIndexTo, movingRingTo)
                     if movingResult != 0:
+                        is_moving = 0
                         movingIndex = -1
                         movingRing = -1
+                        movingIndexTo = -1
+                        movingRingTo = -1
                         if movingResult == 2:
                             can_remove = 1
                             draw_game(3)
-                            return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+                            return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo
                         else:
                             checkWin = game.checkWin()
                             game.changePlayer()
                             draw_game(2)
-                            return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+                            return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo
                 pygame.display.update()
 
     def humanPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing):
@@ -291,7 +289,7 @@ def main():
         while placing_phase != 18 or can_remove == 1:
 
             for event in pygame.event.get():
-            
+
                 if (event.type == pygame.QUIT or event.type == pygame.K_ESCAPE):
                     self.running = False
                     sys.exit()
