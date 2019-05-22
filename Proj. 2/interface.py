@@ -236,7 +236,6 @@ def main():
 
         # Moving pieces phase
         while moving_phase != 1:
-
             for event in pygame.event.get():
 
                 if (event.type == pygame.QUIT or event.type == pygame.K_ESCAPE):
@@ -259,32 +258,32 @@ def main():
                         draw_game(2)
                         return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
 
-                elif is_moving == 0:                            # choose a piece to move
-                    #returns value, index, ring
-                    if game.countPieces(game.player) == 3:
-                        minimax_values = game.minimax(1, -math.inf, math.inf, True, 3)
-                    else:
-                        minimax_values = game.minimax(1, -math.inf, math.inf, True, 2)
+                                            # choose a piece to move
+                #returns value, index, ring
+                if game.countPieces(game.player) == 3:
+                    minimax_values = game.minimax(1, -math.inf, math.inf, True, 3)
+                else:
+                    minimax_values = game.minimax(1, -math.inf, math.inf, True, 2)
 
-                    index = minimax_values[1]
-                    ring = minimax_values[2]
-                    index_to = minimax_values[3]
-                    ring_to = minimax_values[4]
+                index = minimax_values[1]
+                ring = minimax_values[2]
+                index_to = minimax_values[3]
+                ring_to = minimax_values[4]
 
-                    if game.countPieces(game.player) == 3 or len(game.pieceMoves(index, ring)) != 0:
-                        movingResult = game.move(index, ring, index_to, ring_to)
-                        if movingResult != 0:
-                            movingIndex = -1
-                            movingRing = -1
-                            if movingResult == 2:
-                                can_remove = 1
-                                draw_game(3)
-                                return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
-                            else:
-                                checkWin = game.checkWin()
-                                game.changePlayer()
-                                draw_game(2)
-                                return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+                if game.countPieces(game.player) == 3 or len(game.pieceMoves(index, ring)) != 0:
+                    movingResult = game.move(index, ring, index_to, ring_to)
+                    if movingResult != 0:
+                        movingIndex = -1
+                        movingRing = -1
+                        if movingResult == 2:
+                            can_remove = 1
+                            draw_game(3)
+                            return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
+                        else:
+                            checkWin = game.checkWin()
+                            game.changePlayer()
+                            draw_game(2)
+                            return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing
                 pygame.display.update()
 
     def humanPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing):
@@ -292,8 +291,6 @@ def main():
         while placing_phase != 18 or can_remove == 1:
 
             for event in pygame.event.get():
-
-                print(game.minimax(1,-math.inf, math.inf,True,1))
             
                 if (event.type == pygame.QUIT or event.type == pygame.K_ESCAPE):
                     self.running = False

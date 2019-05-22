@@ -436,10 +436,7 @@ class Game:
         elif phase == 2 or phase == 3:
             return self.heuristicPhase2(intersections, player)
 
-    """
-    No caso de phase 1 ou 4, retorna as posições onde se podem colocar peças e que peças pode remover respetivamente
-    No caso de phase 2 ou 3 retorna as peças que podem ser jogadas
-    """
+
     def get_valid_locations(self, phase):
         positions = []
         #Colocar peças
