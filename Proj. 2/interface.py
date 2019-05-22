@@ -176,7 +176,6 @@ def main():
                 running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing = humanPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing)
             else:
                 running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo = AiPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo)
-
         return running
 
 
@@ -252,7 +251,7 @@ def main():
                         minimax_values = game.minimax(1, -math.inf, math.inf, True, 3)
                     else:
                         minimax_values = game.minimax(1, -math.inf, math.inf, True, 2)
-                        
+
                     index = minimax_values[1]
                     ring = minimax_values[2]
                     index_to = minimax_values[3]
