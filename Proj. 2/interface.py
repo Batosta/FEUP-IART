@@ -144,8 +144,10 @@ def main():
         movingIndexTo = -1
         movingRingTo = -1
 
+        depth = 2
+
         while running == 0:
-            running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo = AiPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo)
+            running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo = AiPlay(depth, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo)
             pygame.display.update()
             time.sleep(0.5)
         return running
@@ -180,15 +182,17 @@ def main():
         movingIndexTo = -1
         movingRingTo = -1
 
+        depth = 1
+
         while running == 0:
             if game.player == 1:
                 running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing = humanPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing)
             else:
-                running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo = AiPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo)
+                running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo = AiPlay(depth, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo)
         return running
 
 
-    def AiPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo):
+    def AiPlay(depth, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo):
         # Placing pieces phase
         while placing_phase != 18 or can_remove == 1:
 
@@ -199,7 +203,7 @@ def main():
                     sys.exit()
                 
                 if can_remove == 1:                             # remove a piece
-                    minimax_values = game.minimax(1, -math.inf, math.inf, True, 4)
+                    minimax_values = game.minimax(depth, -math.inf, math.inf, True, 4)
                     index = minimax_values[1]
                     ring = minimax_values[2]
                     game.remove(ring, index)
@@ -214,7 +218,7 @@ def main():
                         draw_game(2)
                         return checkWin, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo
                 else:                                           # place a piece
-                        minimax_values = game.minimax(1, -math.inf, math.inf, True, 1)
+                        minimax_values = game.minimax(depth, -math.inf, math.inf, True, 1)
                         index = minimax_values[1]
                         ring = minimax_values[2]
                         can_remove = game.place(index, ring)
@@ -243,7 +247,7 @@ def main():
                     sys.exit()
                 
                 if can_remove == 1:                             # remove a piece
-                    minimax_values = game.minimax(1, -math.inf, math.inf, True, 4)
+                    minimax_values = game.minimax(depth, -math.inf, math.inf, True, 4)
                     index = minimax_values[1]
                     ring = minimax_values[2]
                     game.remove(ring, index)
@@ -255,9 +259,9 @@ def main():
 
                 elif is_moving == 0:                            # choose a piece to move
                     if game.countPieces(game.player) == 3:
-                        minimax_values = game.minimax(1, -math.inf, math.inf, True, 3)
+                        minimax_values = game.minimax(depth, -math.inf, math.inf, True, 3)
                     else:
-                        minimax_values = game.minimax(1, -math.inf, math.inf, True, 2)
+                        minimax_values = game.minimax(depth, -math.inf, math.inf, True, 2)
 
                     index = minimax_values[1]
                     ring = minimax_values[2]
