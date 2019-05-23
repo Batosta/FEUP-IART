@@ -152,7 +152,8 @@ def main():
         movingIndexTo2 = -1
         movingRingTo2 = -1
 
-        depth = 2
+        depth = 3
+
 
         while running == 0:
             if game.player == 1:
@@ -200,12 +201,13 @@ def main():
                 running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing = humanPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing)
             else:
                 running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo = AiPlay(depth, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo)
+            time.sleep(2)
         return running
 
 
     def AiPlay(depth, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo):
         # Placing pieces phase
-        while placing_phase != 18 or can_remove == 1:
+        while placing_phase != 18:
 
             for event in pygame.event.get():
             

@@ -436,10 +436,8 @@ class Game:
         value = 1
         if intersection.getPos() in [1,3,5,7]:
             value += 1
-            if intersection.getRing() == 1:
-                value += 2
         if self.isPieceBlocked(intersection.getPos(), intersection.getRing(), intersections):
-            value -= 3
+            value = 1
         if intersection.getValue() == player:
             return value
         return -value
@@ -522,7 +520,7 @@ class Game:
                     children.append((temporaryGame, intersection.pos, intersection.ring))
 
         if phase == 2:
-            moves = self.playerMoves_for_AI(phase)
+            moves = self.playerMoves_for_AI(self.player)
             for move in moves:
                 pos_to_move = move[0][0] 
                 ring_to_move = move[0][1]
@@ -616,6 +614,7 @@ class Game:
             children = self.children(phase)
 
             if phase != 2 and phase != 3:
+                print(valid_locations)
                 index, ring = random.choice(valid_locations)
             else:
                 rand = random.choice(valid_locations)
