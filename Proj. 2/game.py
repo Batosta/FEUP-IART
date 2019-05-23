@@ -274,14 +274,14 @@ class Game:
         mills = 0
         for ring in [0, 1, 2]:
 
-            if self.selectIntersection(0, ring, intersections).getValue() == player and self.selectIntersection(1, ring, intersections).getValue()  == player and self.selectIntersection(2, ring, intersections).getValue()  == player:
+            if self.selectIntersection(0, ring, intersections).getValue() == player and self.selectIntersection(1, ring, intersections).getValue() == player and self.selectIntersection(2, ring, intersections).getValue()  == player:
                 mills += 1
             
-            if self.selectIntersection(4, ring, intersections).getValue()  == player and self.selectIntersection(5, ring, intersections).getValue()  == player and self.selectIntersection(6, ring, intersections).getValue()  == player:
+            if self.selectIntersection(4, ring, intersections).getValue() == player and self.selectIntersection(5, ring, intersections).getValue() == player and self.selectIntersection(6, ring, intersections).getValue()  == player:
                 mills += 1
 
         for pos in [3,7]:
-            if self.selectIntersection(pos, 0, intersections).getValue()  == player and self.selectIntersection(pos, 1, intersections).getValue()  == player and self.selectIntersection(pos, 2, intersections).getValue()  == player:
+            if self.selectIntersection(pos, 0, intersections).getValue() == player and self.selectIntersection(pos, 1, intersections).getValue() == player and self.selectIntersection(pos, 2, intersections).getValue()  == player:
                 mills += 1
         return mills
 
@@ -289,13 +289,13 @@ class Game:
         mills = 0
         for ring in [0, 1, 2]:
 
-            if self.selectIntersection(0, ring, intersections).getValue()  == player and self.selectIntersection(7, ring, intersections).getValue()  == player and self.selectIntersection(6, ring, intersections).getValue()  == player:
+            if self.selectIntersection(0, ring, intersections).getValue() == player and self.selectIntersection(7, ring, intersections).getValue()  == player and self.selectIntersection(6, ring, intersections).getValue() == player:
                 mills += 1
             
-            if self.selectIntersection(2, ring, intersections).getValue()  == player and self.selectIntersection(3, ring, intersections).getValue()  == player and self.selectIntersection(4, ring, intersections).getValue()  == player:
+            if self.selectIntersection(2, ring, intersections).getValue() == player and self.selectIntersection(3, ring, intersections).getValue()  == player and self.selectIntersection(4, ring, intersections).getValue() == player:
                 mills += 1
         for pos in [1,5]:
-            if self.selectIntersection(pos, 0, intersections).getValue()  == player and self.selectIntersection(pos, 1, intersections).getValue()  == player and self.selectIntersection(pos, 2, intersections).getValue()  == player:
+            if self.selectIntersection(pos, 0, intersections).getValue() == player and self.selectIntersection(pos, 1, intersections).getValue()  == player and self.selectIntersection(pos, 2, intersections).getValue() == player:
                 mills += 1
         return mills
 

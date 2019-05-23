@@ -135,10 +135,19 @@ def main():
         
         running = 0
 
+        placing_phase = 0
+        moving_phase = 0
+        can_remove = 0
+        is_moving = 0
+        movingIndex = -1
+        movingRing = -1
+        movingIndexTo = -1
+        movingRingTo = -1
+
         while running == 0:
-
-            game.minimax(depth, alpha, beta, maximizingPlayer, phase)
-
+            running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo = AiPlay(placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo)
+            pygame.display.update()
+            time.sleep(0.5)
         return running
 
     def humanVsHuman():
@@ -222,8 +231,6 @@ def main():
                             game.changePlayer()
                             draw_game(1)
                             return 0, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo
-
-                pygame.display.update()
 
 
         # Moving pieces phase
