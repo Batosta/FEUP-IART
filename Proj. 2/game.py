@@ -264,6 +264,41 @@ class Game:
                 counter += 1
         return counter
 
+    def mills(self, intersections, player):
+        mills = 0
+        mills += self.checkVerticalMills(intersections, player)
+        mills += self.checkHorizontalMills(intersections, player)
+        return mills
+
+    def checkHorizontalMills(self, intersections, player):
+        mills = 0
+        for ring in [0, 1, 2]:
+
+            if self.selectIntersection(0, ring, intersections).getValue() == player and self.selectIntersection(1, ring, intersections).getValue()  == player and self.selectIntersection(2, ring, intersections).getValue()  == player:
+                mills += 1
+            
+            if self.selectIntersection(4, ring, intersections).getValue()  == player and self.selectIntersection(5, ring, intersections).getValue()  == player and self.selectIntersection(6, ring, intersections).getValue()  == player:
+                mills += 1
+
+        for pos in [3,7]:
+            if self.selectIntersection(pos, 0, intersections).getValue()  == player and self.selectIntersection(pos, 1, intersections).getValue()  == player and self.selectIntersection(pos, 2, intersections).getValue()  == player:
+                mills += 1
+        return mills
+
+    def checkVerticalMills(self, intersections, player):
+        mills = 0
+        for ring in [0, 1, 2]:
+
+            if self.selectIntersection(0, ring, intersections).getValue()  == player and self.selectIntersection(7, ring, intersections).getValue()  == player and self.selectIntersection(6, ring, intersections).getValue()  == player:
+                mills += 1
+            
+            if self.selectIntersection(2, ring, intersections).getValue()  == player and self.selectIntersection(3, ring, intersections).getValue()  == player and self.selectIntersection(4, ring, intersections).getValue()  == player:
+                mills += 1
+        for pos in [1,5]:
+            if self.selectIntersection(pos, 0, intersections).getValue()  == player and self.selectIntersection(pos, 1, intersections).getValue()  == player and self.selectIntersection(pos, 2, intersections).getValue()  == player:
+                mills += 1
+        return mills
+
     def possibleMills(self, intersections, player):
         possibelMills = 0
         possibelMills += self.checkVerticalPossible(intersections, player)
@@ -415,6 +450,7 @@ class Game:
             if intersection.getValue() != 0:
                 value += self.getIntersectionValuePlace(intersection, intersections, player)
         value += (self.possibleMills(intersections, player) - self.possibleMills(intersections, self.getNextPlayer(player))) * 3
+        value += (self.mills(intersections, player) - self.mills(intersections, self.getNextPlayer(player))) * 2
         return value
 
     def heuristicPhase2(self, intersections, player):
@@ -427,6 +463,7 @@ class Game:
             if intersection.getValue() != 0:
                 value += self.getIntersectionValueMove(intersection, intersections, player)
         value += self.possibleMills(intersections, player) * 5 - self.possibleMills(intersections, self.getNextPlayer(player)) * 6
+        value += (self.mills(intersections, player) - self.mills(intersections, self.getNextPlayer(player))) * 5
         return value
                 
 
