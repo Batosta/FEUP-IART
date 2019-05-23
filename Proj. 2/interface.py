@@ -144,10 +144,21 @@ def main():
         movingIndexTo = -1
         movingRingTo = -1
 
+        moving_phase2 = 0
+        can_remove2 = 0
+        is_moving2 = 0
+        movingIndex2 = -1
+        movingRing2 = -1
+        movingIndexTo2 = -1
+        movingRingTo2 = -1
+
         depth = 2
 
         while running == 0:
-            running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo = AiPlay(depth, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo)
+            if game.player == 1:
+                running, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo = AiPlay(depth, placing_phase, moving_phase, can_remove, is_moving, movingIndex, movingRing, movingIndexTo, movingRingTo)
+            else:
+                running, placing_phase, moving_phase2, can_remove2, is_moving2, movingIndex2, movingRing2, movingIndexTo2, movingRingTo2 = AiPlay(depth, placing_phase, moving_phase2, can_remove2, is_moving2, movingIndex2, movingRing2, movingIndexTo2, movingRingTo2)
             pygame.display.update()
             time.sleep(0.5)
         return running
