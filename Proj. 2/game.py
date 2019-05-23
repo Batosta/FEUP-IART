@@ -559,16 +559,16 @@ class Game:
 
             value = -math.inf
             children = self.children(phase)
+            previous_phase = phase
 
-            if phase != 2 and phase != 3:
-                index, ring = random.choice(valid_locations)
-            else:
+            if (phase == 2 or phase == 3) and (previous_phase != 1 and previous_phase != 4):
                 rand = random.choice(valid_locations)
                 index, ring = random.choice(rand[1])
                 index_to_move = rand[0][0]
                 ring_to_move = rand[0][1]
 
-            previous_phase = phase
+            else:
+                index, ring = random.choice(valid_locations)
 
             for child in children:
 
@@ -584,7 +584,8 @@ class Game:
                         phase = 3
                     phase = 2
                 else:
-                    phase = 1
+                    if phase != 2 and phase != 3:
+                        phase = 1
 
                 new_score = child[0].minimax(depth - 1, alpha, beta, False, phase)
 
@@ -612,20 +613,19 @@ class Game:
 
             value = math.inf
             children = self.children(phase)
+            previous_phase = phase
 
-            if phase != 2 and phase != 3:
-                print(valid_locations)
-                index, ring = random.choice(valid_locations)
-            else:
+            if (phase == 2 or phase == 3) and (previous_phase != 1 and previous_phase != 4):
                 rand = random.choice(valid_locations)
                 index, ring = random.choice(rand[1])
                 index_to_move = rand[0][0]
-                ring_to_move = rand[0][1]
+                ring_to_move = rand[0][1]  
+            else:
+                index, ring = random.choice(valid_locations)
 
             previous_phase = phase
 
             for child in children:
-
 
                 if (phase == 2 or phase == 3) and (previous_phase != 1 and previous_phase != 4):
                     intersection = child[0].selecti(child[3], child[4])
@@ -639,7 +639,8 @@ class Game:
                         phase = 3
                     phase = 2
                 else:
-                    phase = 1
+                    if phase != 2 and phase != 3:
+                        phase = 1
 
                 new_score = child[0].minimax(depth - 1, alpha, beta, True, phase)
 

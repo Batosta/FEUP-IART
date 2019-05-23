@@ -152,7 +152,7 @@ def main():
         movingIndexTo2 = -1
         movingRingTo2 = -1
 
-        depth = 3
+        depth = 2
 
 
         while running == 0:
@@ -161,7 +161,6 @@ def main():
             else:
                 running, placing_phase, moving_phase2, can_remove2, is_moving2, movingIndex2, movingRing2, movingIndexTo2, movingRingTo2 = AiPlay(depth, placing_phase, moving_phase2, can_remove2, is_moving2, movingIndex2, movingRing2, movingIndexTo2, movingRingTo2)
             pygame.display.update()
-            time.sleep(0.5)
         return running
 
     def humanVsHuman():
@@ -275,6 +274,8 @@ def main():
                         minimax_values = game.minimax(depth, -math.inf, math.inf, True, 3)
                     else:
                         minimax_values = game.minimax(depth, -math.inf, math.inf, True, 2)
+
+                    print(minimax_values)
 
                     index = minimax_values[1]
                     ring = minimax_values[2]
